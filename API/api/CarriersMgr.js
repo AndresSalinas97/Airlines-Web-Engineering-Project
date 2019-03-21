@@ -35,6 +35,13 @@ class CarriersMgr {
 
         return result;
     }
+
+    async getCarrier(carrier) {
+        var fullCarrier = await this.db.getCarrier(carrier);
+        var result = {data: fullCarrier.carrier};
+        result.statistics = projectURL + "carriers/" + carrier + "/statistics/";
+        return result;
+    }
 }
 
 module.exports.CarriersMgr = CarriersMgr

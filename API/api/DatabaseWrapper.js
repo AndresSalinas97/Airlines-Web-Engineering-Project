@@ -28,12 +28,20 @@ class DatabaseWrapper {
         return await this.collection.distinct("airport");
     }
 
+    async getAirport(airportCode) {
+        return await this.collection.findOne({"airport.code":airportCode});
+    }
+
 	async getAllCarriers() {
         return await this.collection.distinct("carrier");
 	}
 
     async getAllCarriersPerAirport(airport) {
         return await this.collection.distinct("carrier", {"airport.code": airport});
+    }
+
+    async getCarrier(carrier) {
+        return await this.collection.findOne({"carrier.code":carrier});
     }
 }
 

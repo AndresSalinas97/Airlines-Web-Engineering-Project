@@ -28,6 +28,12 @@ class AirportsMgr {
 
         return result;
     }
+
+    async getAirport(airport) {
+        var fullAirport = await this.db.getAirport(airport);
+        var result = {data: fullAirport.airport};
+        return result;
+    }
 }
 
 module.exports.AirportsMgr = AirportsMgr
