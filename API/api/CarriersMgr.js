@@ -10,10 +10,13 @@ class CarriersMgr {
         this.db = db;
     }
 
-    async getCarriersPaginated(page_number=1, per_page=30) {
+    async getCarriersPaginated(page_number=1, per_page=30, airport) {
         var urlBegining =  projectURL + "carriers/"
 
-        var carriers = await this.db.getAllCarriers();
+        if(airport == undefined)
+            var carriers = await this.db.getAllCarriers();
+        else
+            var carriers = await this.db.getAllCarriersPerAirport(airport);
 
         carriers.forEach(carrier => {
             carrier.url = urlBegining + carrier.code;

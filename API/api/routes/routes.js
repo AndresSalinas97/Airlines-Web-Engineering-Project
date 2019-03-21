@@ -21,7 +21,8 @@ module.exports = function(app) {
     app.get("/carriers", async function(req,res) {
         var page = req.query.page;
         var per_page = req.query.per_page;
+        var airport = req.query.airport;
 
-        res.send(await carriers.getCarriersPaginated(page, per_page));
+        res.send(await carriers.getCarriersPaginated(page, per_page, airport));
     });
 };
