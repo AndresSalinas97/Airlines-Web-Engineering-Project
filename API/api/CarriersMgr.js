@@ -24,16 +24,13 @@ class CarriersMgr {
 
         var page_number = parseInt(page_number);
         var per_page = parseInt(per_page);
-
         var firstItem = (page_number-1) * per_page;
         var lastItem = firstItem + per_page;
 
         if(airport == undefined)
-            var result = pagination.addPaginationMetaData(projectURL + "carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page);
+            return pagination.addPaginationMetaData(projectURL+"carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page);
         else
-            var result = pagination.addPaginationMetaData(projectURL + "carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page, "&airport="+airport);
-
-        return result;
+            return pagination.addPaginationMetaData(projectURL+"carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page, "&airport="+airport);
     }
 
     async getCarrier(carrier) {
@@ -41,6 +38,37 @@ class CarriersMgr {
         var result = {data: fullCarrier.carrier};
         result.statistics = projectURL + "carriers/" + carrier + "/statistics/";
         return result;
+    }
+
+    async getCarrierStatisticsPaginated(carrier, airport, month, page_number=1, per_page=30) {
+        var page_number = parseInt(page_number);
+        var per_page = parseInt(per_page);
+        var firstItem = (page_number-1) * per_page;
+        var lastItem = firstItem + per_page;
+
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page);
+
+        var statistics = await cursor.toArray();
+        var total_count = await cursor.count();
+
+        var baseURL = projectURL+"carriers/"+carrier+"/statistics";
+        var extraURL = "";
+        if(airport != undefined)
+            extraURL = extraURL + "&airport=" + airport;
+        if(month != undefined)
+            extraURL = extraURL + "&month=" + month.replace('-', '/');
+
+
+        statistics.forEach(statistic => {
+            var statisticsURL = {
+                "flights": baseURL+"/flights"+extraURL,
+                "# of delays": baseURL+"/delays"+extraURL,
+                "minutes delayed": baseURL+"/minutes-delayed"+extraURL
+            };
+
+            statistic["statistics"] = statisticsURL;
+        })
+        return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
     }
 }
 

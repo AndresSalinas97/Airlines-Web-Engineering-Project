@@ -24,9 +24,7 @@ class AirportsMgr {
         var firstItem = (page_number-1) * per_page;
         var lastItem = firstItem + per_page;
 
-        let result = pagination.addPaginationMetaData(projectURL + "airports", airports.slice(firstItem, lastItem), airports.length, page_number, per_page);
-
-        return result;
+        return pagination.addPaginationMetaData(projectURL+"airports", airports.slice(firstItem, lastItem), airports.length, page_number, per_page);
     }
 
     async getAirport(airport) {

@@ -43,6 +43,32 @@ class DatabaseWrapper {
     async getCarrier(carrier) {
         return await this.collection.findOne({"carrier.code":carrier});
     }
+
+	async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page) {
+        var query = {"carrier.code": carrier};
+
+        if(airport != undefined) {
+            query["airport.code"] = airport;
+        }
+
+        if(month != undefined) {
+            month = month.replace('-', '/');
+            query["time.label"] = month;
+        }
+
+        var options = {
+            "limit": per_page,
+            "skip": firstItem,
+            "fields": {
+                '_id': 0,
+                'statistics.flights': 0,
+                'statistics.# of delays': 0,
+                'statistics.minutes delayed': 0
+            }
+        }
+
+		return await this.collection.find(query, options);
+	}
 }
 
 
