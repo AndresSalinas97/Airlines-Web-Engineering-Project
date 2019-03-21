@@ -1,17 +1,18 @@
 'use strict';
-const { DatabaseWrapper } = require('./DatabaseWrapper')
-let db = new DatabaseWrapper();
+
+const { DatabaseWrapper } = require('../DatabaseWrapper')
+const { AirportsMgr } = require('../AirportsMgr')
+
+let mongoDB = new DatabaseWrapper();
+let airports = new AirportsMgr(mongoDB);
+
+
 
 module.exports = function(app) {
+    app.get("/airports", async function(req,res) {
+        var page = req.query.page;
+        var per_page = req.query.per_page;
 
-    app.get("/airports", async function(req,res){
-      var pg1 = req.query.page;
-      console.log(pg1);
-      var pg2 = req.query.per_page;
-      console.log(pg2);
-      res.send( await db.getAirports(pg1, pg2));
-  });
-
-
-
+        res.json(await airports.getAirportsPaginated(page, per_page));
+    });
 };
