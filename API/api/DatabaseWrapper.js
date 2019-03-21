@@ -44,7 +44,7 @@ class DatabaseWrapper {
         return await this.collection.findOne({"carrier.code":carrier});
     }
 
-	async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page) {
+	async getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page) {
         var query = {"carrier.code": carrier};
 
         if(airport != undefined) {
@@ -65,10 +65,32 @@ class DatabaseWrapper {
                 'statistics.# of delays': 0,
                 'statistics.minutes delayed': 0
             }
-        }
+        };
 
 		return await this.collection.find(query, options);
 	}
+
+    async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page) {
+        var query = {"carrier.code": carrier};
+
+        if(airport != undefined) {
+            query["airport.code"] = airport;
+        }
+
+        if(month != undefined) {
+            month = month.replace('-', '/');
+            query["time.label"] = month;
+        }
+
+        var options = {
+            "limit": per_page,
+            "skip": firstItem,
+            "fields": {'_id': 0}
+        };
+
+		return await this.collection.find(query, options);
+	}
+
 }
 
 

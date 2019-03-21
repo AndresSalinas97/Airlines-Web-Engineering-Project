@@ -53,4 +53,37 @@ module.exports = function(app) {
 
         res.json(await carriers.getCarrierStatisticsPaginated(carrier, airport, month, page, per_page));
     });
+
+    // Carrier Statistics - Get flight statistics about all flights of a carrier
+    app.get("/carriers/:carrier/statistics/flights", async function(req,res) {
+        var carrier = req.params.carrier;
+        var airport = req.query.airport;
+        var month = req.query.month;
+        var page = req.query.page;
+        var per_page = req.query.per_page;
+
+        res.json(await carriers.getSpecificCarrierStatisticsPaginated("flights", carrier, airport, month, page, per_page));
+    });
+
+    // Carrier Statistics - Get # of delays statistics about all flights of a carrier
+    app.get("/carriers/:carrier/statistics/delays", async function(req,res) {
+        var carrier = req.params.carrier;
+        var airport = req.query.airport;
+        var month = req.query.month;
+        var page = req.query.page;
+        var per_page = req.query.per_page;
+
+        res.json(await carriers.getSpecificCarrierStatisticsPaginated("# of delays", carrier, airport, month, page, per_page));
+    });
+
+    // Carrier Statistics - Get minutes delayed statistics about all flights of a carrier
+    app.get("/carriers/:carrier/statistics/minutes-delayed", async function(req,res) {
+        var carrier = req.params.carrier;
+        var airport = req.query.airport;
+        var month = req.query.month;
+        var page = req.query.page;
+        var per_page = req.query.per_page;
+
+        res.json(await carriers.getSpecificCarrierStatisticsPaginated("minutes delayed", carrier, airport, month, page, per_page));
+    });
 };

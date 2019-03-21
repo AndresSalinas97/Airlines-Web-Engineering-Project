@@ -46,7 +46,7 @@ class CarriersMgr {
         var firstItem = (page_number-1) * per_page;
         var lastItem = firstItem + per_page;
 
-        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page);
+        var cursor = await this.db.getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page);
 
         var statistics = await cursor.toArray();
         var total_count = await cursor.count();
@@ -62,6 +62,48 @@ class CarriersMgr {
             };
 
             statistic["statistics"] = statisticsURL;
+        })
+
+        var extraURL = "";
+        if(airport != undefined)
+            extraURL = extraURL + "&airport=" + airport;
+        if(month != undefined)
+            extraURL = extraURL + "&month=" + month.replace('/', '-');
+
+        return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
+    }
+
+    // type can be "flights" || "# of delays" || "minutes delayed"
+    async getSpecificCarrierStatisticsPaginated(type, carrier, airport, month, page_number=1, per_page=30) {
+        var page_number = parseInt(page_number);
+        var per_page = parseInt(per_page);
+        var firstItem = (page_number-1) * per_page;
+        var lastItem = firstItem + per_page;
+
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page);
+
+        var fullStatistics = await cursor.toArray();
+        var total_count = await cursor.count();
+
+        var baseURL = projectURL+"carriers/"+carrier+"/statistics/flights";
+
+        var statistics = [];
+
+        fullStatistics.forEach(fullStatistic => {
+            var temp = {
+                "airport": fullStatistic.airport,
+                "carrier": fullStatistic.carrier,
+                "time": fullStatistic.time
+            };
+
+            if(type == "flights")
+                temp["flights"] = fullStatistic["statistics"]["flights"];
+            else if (type == "# of delays")
+                temp["# of delays"] = fullStatistic["statistics"]["# of delays"];
+            else
+                temp["minutes delayed"] = fullStatistic["statistics"]["minutes delayed"];
+
+            statistics.push(temp);
         })
 
         var extraURL = "";
