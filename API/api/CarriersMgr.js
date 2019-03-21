@@ -22,13 +22,16 @@ class CarriersMgr {
             carrier.url = urlBegining + carrier.code;
         });
 
-        page_number = parseInt(page_number);
-        per_page = parseInt(per_page);
+        var page_number = parseInt(page_number);
+        var per_page = parseInt(per_page);
 
         var firstItem = (page_number-1) * per_page;
         var lastItem = firstItem + per_page;
 
-        let result = pagination.addPaginationMetaData(projectURL + "airports", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page);
+        if(airport == undefined)
+            var result = pagination.addPaginationMetaData(projectURL + "carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page);
+        else
+            var result = pagination.addPaginationMetaData(projectURL + "carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page, "&airport="+airport);
 
         return result;
     }
