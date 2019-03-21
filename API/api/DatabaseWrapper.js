@@ -27,6 +27,10 @@ class DatabaseWrapper {
     async getAllAirports() {
         return await this.collection.distinct("airport");
     }
+
+	async getAllCarriers() {
+        return await this.collection.distinct("carrier");
+	}
 }
 
 
