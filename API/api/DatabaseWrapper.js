@@ -33,13 +33,7 @@ class DatabaseWrapper {
 	}
 
     async getAllCarriersPerAirport(airport) {
-        console.log("HERERERERERERERER");
-
-        var carriers = await this.collection.findOne({airport : {$eq: airport}}, {carrier: 1});
-
-        console.log(carriers);
-
-        return carriers;
+        return await this.collection.distinct("carrier", {"airport.code": airport});
     }
 }
 
