@@ -52,14 +52,9 @@ class CarriersMgr {
         var total_count = await cursor.count();
 
         var baseURL = projectURL+"carriers/"+carrier+"/statistics";
-        var extraURL = "";
-        if(airport != undefined)
-            extraURL = extraURL + "&airport=" + airport;
-        if(month != undefined)
-            extraURL = extraURL + "&month=" + month.replace('-', '/');
-
 
         statistics.forEach(statistic => {
+            var extraURL = "?airport=" + statistic.airport.code + "&month=" + statistic.time.label.replace('/', '-');
             var statisticsURL = {
                 "flights": baseURL+"/flights"+extraURL,
                 "# of delays": baseURL+"/delays"+extraURL,
@@ -68,6 +63,13 @@ class CarriersMgr {
 
             statistic["statistics"] = statisticsURL;
         })
+
+        var extraURL = "";
+        if(airport != undefined)
+            extraURL = extraURL + "&airport=" + airport;
+        if(month != undefined)
+            extraURL = extraURL + "&month=" + month.replace('/', '-');
+
         return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
     }
 }
