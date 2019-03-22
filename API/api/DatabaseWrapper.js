@@ -5,7 +5,7 @@ const logger = require('../utils/logger')
 
 
 class DatabaseWrapper {
-	constructor() {
+    constructor() {
         this.uri = "mongodb+srv://admin:admin@cluster0-q0yt0.gcp.mongodb.net/test?retryWrites=true";
         this.client = new MongoClient(this.uri, { useNewUrlParser: true });
         this.client.connect(err => {
@@ -31,9 +31,9 @@ class DatabaseWrapper {
         return await this.collection.findOne({"airport.code":airportCode});
     }
 
-	async getAllCarriers() {
+    async getAllCarriers() {
         return await this.collection.distinct("carrier");
-	}
+    }
 
     async getAllCarriersPerAirport(airport) {
         return await this.collection.distinct("carrier", {"airport.code": airport});
@@ -43,7 +43,7 @@ class DatabaseWrapper {
         return await this.collection.findOne({"carrier.code":carrier});
     }
 
-	async getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page) {
+    async getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page) {
         var query = {"carrier.code": carrier};
 
         if(airport != undefined) {
@@ -66,8 +66,8 @@ class DatabaseWrapper {
             }
         };
 
-		return await this.collection.find(query, options);
-	}
+        return await this.collection.find(query, options);
+    }
 
     async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page, fields) {
         var query = {"carrier.code": carrier};
@@ -87,14 +87,20 @@ class DatabaseWrapper {
             "fields": fields
         };
 
-		return await this.collection.find(query, options);
-	}
+        return await this.collection.find(query, options);
+    }
 
-	// async updateCarrierStatistic(updateObject, carrier, airport, month){
-	// 	var query = {"carrier.code": carrier, "airport.code": airport, "time.label":month};
-	// 	return await this.collection.update(query, updateObject);
-	// }
+    async updateCarrierStatistics(carrier, airport, month, newValues) {
+        var query = {
+            "carrier.code": carrier,
+            "airport.code": airport,
+            "time.label": month.replace('-', '/')
+        };
 
+        var updateOperators = {$set: newValues}
+
+        return await this.collection.updateOne(query, updateOperators);
+    }
 }
 
 

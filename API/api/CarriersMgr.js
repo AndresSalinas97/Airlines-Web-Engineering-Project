@@ -131,24 +131,48 @@ class CarriersMgr {
         return pagination.addPaginationMetaData(baseURL, fullStatistics, total_count, page_number, per_page, extraURL);
     }
 
-    // async updateSpecificCarrierStatistics(type, body, carrier, airport, month){
-    //     if(type == "flights"){
-    //         var t = "statistics.flights.";
-    //     }
-    //     else if (type == "delays"){
-    //         var t = "statistics.# of delays.";
-    //     }
-    //     else{
-    //         var t = "statistics.minutes delayed.";
-    //     }
-    //     var updateObject = {"$set":{}};
-    //     body.keys().forEach(key =>{
-    //         updateObject["$set"][t+key] = body[key];
-    //     });
-    //     var result = await this.db.updateCarrierStatistic(updateObject, carrier, airport, month);
-    //     console.log(result);
-    //     return result;
-    // }
+    async updateSpecificCarrierStatistics(type, body, carrier, airport, month) {
+        if(type == "flights") {
+            var t = "statistics.flights";
+            var typeFixed = "flights";
+        } else if (type == "delays") {
+            var t = "statistics.# of delays";
+            var typeFixed = "# of delays";
+        } else {
+            var t = "statistics.minutes delayed";
+            typeFixed = "minutes delayed";
+        }
+
+        var fields = {};
+        fields[t] = 1;
+        fields['_id'] = 0;
+
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, 0, 1, fields);
+        var oldStatistics = await cursor.toArray();
+
+        if(oldStatistics == undefined || oldStatistics.length == 0)
+            throw new Error('Not found');
+
+        var oldKeys = Object.keys(oldStatistics[0]['statistics'][typeFixed]);
+        var newKeys = Object.keys(body);
+
+        // Check that all the new keys are also in the old keys
+        newKeys.forEach(key => {
+            if(! oldKeys.includes(key))
+                throw new Error("Bad json format");
+        });
+
+        var newValues = {};
+        newKeys.forEach(key => {
+            newValues["statistics."+typeFixed+"."+key] = body[key];
+        });
+
+        await this.db.updateCarrierStatistics(carrier, airport, month, newValues);
+
+        var newStatistics = await cursor.toArray();
+
+        return newStatistics[0];
+    }
 }
 
 module.exports.CarriersMgr = CarriersMgr

@@ -139,20 +139,36 @@ module.exports = function(app) {
         res.json(result);
     });
 
-    // app.patch("/carriers/:carrier/statistics/:type", async function(req,res) {
-    //     var carrier = req.params.carrier;
-    //     var type = req.params.type;
-    //     var airport = req.query.airport;
-    //     var month = req.query.month;
-    //
-    //     if(airport == undefined || month == undefined) {
-    //         res.status(400);
-    //         res.json({"message": "Parameters required"});
-    //     } else {
-    //         console.log(req.body);
-    //         var body = JSON.stringify(req.body);
-    //         console.log(body);
-    //         res.json(await carriers.updateSpecificCarrierStatistics(type, body, carrier, airport, month));
-    //     }
-    // });
+    // Carrier Statistics - Update statistics about all flights of a carrier
+    app.patch("/carriers/:carrier/statistics/:type", async function(req,res) {
+        var carrier = req.params.carrier;
+        var type = req.params.type;
+        var airport = req.query.airport;
+        var month = req.query.month;
+        var body = req.body;
+        var contentType = req.get("Content-Type");
+
+        if(airport==undefined || month==undefined || body==undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+        } else if (contentType != "application/json") {
+            res.status(400);
+            res.json({"message": "Only json input is supported"});
+        } else {
+            try {
+                if(contentType == "application/json")
+                    body = JSON.parse(body);
+                var result = await carriers.updateSpecificCarrierStatistics(type, body, carrier, airport, month);
+            } catch (err) {
+                if(err.message == "Not found") {
+                    res.status(404);
+                    res.json({"message": "Not found"});
+                } else {
+                    res.status(400);
+                    res.json({"message": err.message});
+                }
+            }
+            res.json(result);
+        }
+    });
 };

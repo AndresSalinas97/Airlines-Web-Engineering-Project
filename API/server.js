@@ -12,6 +12,18 @@ const express = require('express'),
 app = express(),
 port = process.env.PORT || 8080;
 
+app.use (function(req, res, next) {
+    var data='';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk) {
+       data += chunk;
+    });
+
+    req.on('end', function() {
+        req.body = data;
+        next();
+    });
+});
 
 var routes = require('./api/routes/routes'); //importing route
 routes(app); //register the route
