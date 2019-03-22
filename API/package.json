@@ -1,0 +1,33 @@
+{
+  "name": "weproject",
+  "version": "1.0.0",
+  "description": "API for the final project for the Web Engineering course",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndresSalinas97/Web-Engineering-Project.git"
+  },
+  "author": "Group 20",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AndresSalinas97/Web-Engineering-Project/issues"
+  },
+  "homepage": "https://github.com/AndresSalinas97/Web-Engineering-Project#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "mongoose": "^5.4.19",
+    "stats-lite": "^2.2.0"
+  },
+  "devDependencies": {
+    "app-root-path": "^2.1.0",
+    "clf-date": "^0.1.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.10",
+    "winston": "^3.2.1"
+  }
+}
