@@ -12,4 +12,7 @@ inside the API folder, followed by
 We picked the node framework combined with express and a mongodb database, because two of us had worked with them before. In this particular project, we had to work with json which is easy to do with each of these. There are also many node libraries that can easily be added using npm.
 
 ### Extensions
-Due to a lack of time, no extensions to the API have been implemented yet.
+No extensions to the API have been implemented yet. We intend to implement some extensions before the final deadline.
+
+### Documentation
+The documentation has been updated according to some changes that have been made since the first deadline.
