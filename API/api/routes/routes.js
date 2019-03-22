@@ -141,12 +141,18 @@ module.exports = function(app) {
 
     // app.patch("/carriers/:carrier/statistics/:type", async function(req,res) {
     //     var carrier = req.params.carrier;
+    //     var type = req.params.type;
     //     var airport = req.query.airport;
     //     var month = req.query.month;
-    //     var type = req.params.type;
-    //     console.log(req.body);
-    //     var body = JSON.stringify(req.body);
-    //     console.log(body);
-    //     res.json(await carriers.updateSpecificCarrierStatistics(type, body, carrier, airport, month));
+    //
+    //     if(airport == undefined || month == undefined) {
+    //         res.status(400);
+    //         res.json({"message": "Parameters required"});
+    //     } else {
+    //         console.log(req.body);
+    //         var body = JSON.stringify(req.body);
+    //         console.log(body);
+    //         res.json(await carriers.updateSpecificCarrierStatistics(type, body, carrier, airport, month));
+    //     }
     // });
 };
