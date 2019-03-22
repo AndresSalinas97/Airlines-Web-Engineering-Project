@@ -249,4 +249,34 @@ module.exports = function(app) {
             res.send(result);
         }
     });
+
+    // Airport Statistics - Descriptive statistics for carrier-specific delays
+    app.get("/airports/:airport/delaystats", async function(req,res) {
+        var airport = req.params.airport;
+        var carrier = req.query.carrier;
+        var airport2 = req.query.airport;
+        var select = req.query.select;
+
+        if(airport2 == undefined || carrier == undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+            return;
+        }
+
+        try {
+            var result = await airports.getStats(airport, airport2, carrier, select);
+        } catch (err) {
+            if(err.message == "Not found") {
+                res.status(404);
+                res.json({"message": "Not found"});
+                return;
+            } else {
+                res.status(400);
+                res.json({"message": err.message});
+                return;
+            }
+        }
+
+        res.json(result);
+    });
 };

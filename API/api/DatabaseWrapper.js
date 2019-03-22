@@ -113,6 +113,17 @@ class DatabaseWrapper {
 
         return await this.collection.updateOne(query, updateOperators);
     }
+
+    async getRouteStatistics(airport, airport2, carrier, fields){
+        var query = {
+            "carrier.code": carrier,
+            $or:[{"airport.code":airport}, {"airport.code":airport2}]
+        };
+
+        var options = {"fields": fields};
+
+        return await this.collection.find(query, options).toArray();
+    }
 }
 
 

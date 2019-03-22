@@ -20,7 +20,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "fs": "0.0.1-security",
-    "mongoose": "^5.4.19"
+    "mongoose": "^5.4.19",
+    "stats-lite": "^2.2.0"
   },
   "devDependencies": {
     "app-root-path": "^2.1.0",
