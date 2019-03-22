@@ -1,5 +1,8 @@
 'use strict';
 
+const logger = require('../../utils/logger')
+const Json2csvParser = require('json2csv').Parser;
+
 const { DatabaseWrapper } = require('../DatabaseWrapper')
 const { AirportsMgr } = require('../AirportsMgr')
 const { CarriersMgr } = require('../CarriersMgr')
@@ -9,12 +12,12 @@ let airports = new AirportsMgr(mongoDB);
 let carriers = new CarriersMgr(mongoDB);
 
 
-
 module.exports = function(app) {
     // Airports - Get all US airports
     app.get("/airports", async function(req,res) {
         var page = req.query.page;
         var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await airports.getAirportsPaginated(page, per_page);
@@ -30,12 +33,16 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Airports - Get specific airport
     app.get("/airports/:airport", async function(req,res) {
         var airport = req.params.airport;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await airports.getAirport(airport);
@@ -51,7 +58,10 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Carriers - Get all carriers operating in US airports
@@ -60,6 +70,7 @@ module.exports = function(app) {
         var airport = req.query.airport;
         var page = req.query.page;
         var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await carriers.getCarriersPaginated(page, per_page, airport);
@@ -75,12 +86,16 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Carriers - Get specific carrier
     app.get("/carriers/:carrier", async function(req,res) {
         var carrier = req.params.carrier;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await carriers.getCarrier(carrier);
@@ -96,7 +111,10 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Carrier Statistics - Get statistics about all flights of a carrier
@@ -106,6 +124,7 @@ module.exports = function(app) {
         var month = req.query.month;
         var page = req.query.page;
         var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await carriers.getCarrierStatisticsPaginated(carrier, airport, month, page, per_page);
@@ -121,7 +140,10 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Carrier Statistics - Get specific statistics about all flights of a carrier
@@ -133,6 +155,7 @@ module.exports = function(app) {
         var select = req.query.select;
         var page = req.query.page;
         var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
 
         try {
             var result = await carriers.getSpecificCarrierStatisticsPaginated(type, select, carrier, airport, month, page, per_page);
@@ -148,7 +171,10 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 
     // Carrier Statistics - Update specific statistics about all flights of a carrier
@@ -192,6 +218,7 @@ module.exports = function(app) {
         var type = req.params.type;
         var airport = req.query.airport;
         var month = req.query.month;
+        var contentType = req.get("Content-Type");
 
         if(airport==undefined || month==undefined) {
             res.status(400);
@@ -246,7 +273,7 @@ module.exports = function(app) {
                 }
             }
             res.status(201);
-            res.send(result);
+            res.json(result);
         }
     });
 
@@ -256,6 +283,7 @@ module.exports = function(app) {
         var carrier = req.query.carrier;
         var airport2 = req.query.airport;
         var select = req.query.select;
+        var contentType = req.get("Content-Type");
 
         if(airport2 == undefined || carrier == undefined) {
             res.status(400);
@@ -277,6 +305,36 @@ module.exports = function(app) {
             }
         }
 
-        res.json(result);
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
     });
 };
+
+
+function sendCSV(result, res) {
+    const opts = { "flatten": true };
+    try {
+        const parser = new Json2csvParser(opts);
+        const csv = parser.parse(result.data);
+        res.set('Content-Type', 'text/csv');
+
+        // Only if we have pagination
+        if(result.page_number != undefined) {
+            res.set('page_number', result.page_number);
+            res.set('per_page', result.per_page);
+            res.set('total_count', result.total_count);
+            res.set('total_pages', result.total_pages);
+
+            var links = {'last_page': result.last_page};
+            if(result.next_page != undefined) links['next_page'] = result.next_page;
+            if(result.previous_page != undefined) links['previous_page'] = result.previous_page;
+
+            res.links(links);
+        }
+        res.send(csv);
+    } catch (err) {
+        logger.error(err);
+    }
+}
