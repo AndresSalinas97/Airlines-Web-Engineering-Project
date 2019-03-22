@@ -97,7 +97,19 @@ class DatabaseWrapper {
             "time.label": month.replace('-', '/')
         };
 
-        var updateOperators = {$set: newValues}
+        var updateOperators = {$set: newValues};
+
+        return await this.collection.updateOne(query, updateOperators);
+    }
+
+    async deleteCarrierStatistics(carrier, airport, month, valuesToDelete) {
+        var query = {
+            "carrier.code": carrier,
+            "airport.code": airport,
+            "time.label": month.replace('-', '/')
+        };
+
+        var updateOperators = {$unset: valuesToDelete};
 
         return await this.collection.updateOne(query, updateOperators);
     }

@@ -22,9 +22,11 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
@@ -41,9 +43,11 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
@@ -63,9 +67,11 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
@@ -82,9 +88,11 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
@@ -105,9 +113,11 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
@@ -130,16 +140,18 @@ module.exports = function(app) {
             if(err.message == "Not found") {
                 res.status(404);
                 res.json({"message": "Not found"});
+                return;
             } else {
                 res.status(400);
                 res.json({"message": err.message});
+                return;
             }
         }
 
         res.json(result);
     });
 
-    // Carrier Statistics - Update statistics about all flights of a carrier
+    // Carrier Statistics - Update specific statistics about all flights of a carrier
     app.patch("/carriers/:carrier/statistics/:type", async function(req,res) {
         var carrier = req.params.carrier;
         var type = req.params.type;
@@ -163,12 +175,44 @@ module.exports = function(app) {
                 if(err.message == "Not found") {
                     res.status(404);
                     res.json({"message": "Not found"});
+                    return;
                 } else {
                     res.status(400);
                     res.json({"message": err.message});
+                    return;
                 }
             }
+
             res.json(result);
+        }
+    });
+
+    // Carrier Statistics - Delete specific statistics about all flights of a carrier
+    app.delete("/carriers/:carrier/statistics/:type", async function(req,res) {
+        var carrier = req.params.carrier;
+        var type = req.params.type;
+        var airport = req.query.airport;
+        var month = req.query.month;
+
+        if(airport==undefined || month==undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+        } else {
+            try {
+                await carriers.deleteSpecificCarrierStatistics(type, carrier, airport, month);
+            } catch (err) {
+                if(err.message == "Not found") {
+                    res.status(404);
+                    res.json({"message": "Not found"});
+                    return;
+                } else {
+                    res.status(400);
+                    res.json({"message": err.message});
+                    return;
+                }
+            }
+            res.status(204);
+            res.send();
         }
     });
 };

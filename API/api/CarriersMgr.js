@@ -173,6 +173,27 @@ class CarriersMgr {
 
         return newStatistics[0];
     }
+
+    async deleteSpecificCarrierStatistics(type, carrier, airport, month) {
+        if(type == "flights") {
+            var typeFixed = "flights";
+        } else if (type == "delays") {
+            var typeFixed = "# of delays";
+        } else {
+            typeFixed = "minutes delayed";
+        }
+
+        // Before deleting we check that the object exists
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, 0, 1);
+        var oldStatistics = await cursor.toArray();
+        if(oldStatistics == undefined || oldStatistics.length == 0)
+            throw new Error('Not found');
+
+        var valuesToDelete = {};
+        valuesToDelete["statistics." + typeFixed] = "";
+
+        await this.db.deleteCarrierStatistics(carrier, airport, month, valuesToDelete);
+    }
 }
 
 module.exports.CarriersMgr = CarriersMgr
