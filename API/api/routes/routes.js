@@ -168,8 +168,7 @@ module.exports = function(app) {
             res.json({"message": "Only json input is supported"});
         } else {
             try {
-                if(contentType == "application/json")
-                    body = JSON.parse(body);
+                body = JSON.parse(body);
                 var result = await carriers.updateSpecificCarrierStatistics(type, body, carrier, airport, month);
             } catch (err) {
                 if(err.message == "Not found") {
@@ -213,6 +212,41 @@ module.exports = function(app) {
             }
             res.status(204);
             res.send();
+        }
+    });
+
+    // Carrier Statistics - Add specific statistics about all flights of a carrier
+    app.post("/carriers/:carrier/statistics/:type", async function(req,res) {
+        var carrier = req.params.carrier;
+        var type = req.params.type;
+        var airport = req.query.airport;
+        var month = req.query.month;
+        var body = req.body;
+        var contentType = req.get("Content-Type");
+
+        if(airport==undefined || month==undefined || body==undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+        } else if (contentType != "application/json") {
+            res.status(400);
+            res.json({"message": "Only json input is supported"});
+        } else {
+            try {
+                body = JSON.parse(body);
+                var result = await carriers.addSpecificCarrierStatistics(type, body, carrier, airport, month);
+            } catch (err) {
+                if(err.message == "Not found") {
+                    res.status(404);
+                    res.json({"message": "Not found"});
+                    return;
+                } else {
+                    res.status(400);
+                    res.json({"message": err.message});
+                    return;
+                }
+            }
+            res.status(201);
+            res.send(result);
         }
     });
 };

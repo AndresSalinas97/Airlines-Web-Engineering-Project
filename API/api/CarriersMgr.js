@@ -183,7 +183,7 @@ class CarriersMgr {
             typeFixed = "minutes delayed";
         }
 
-        // Before deleting we check that the object exists
+        // Before deleting we check that the document exists
         var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, 0, 1);
         var oldStatistics = await cursor.toArray();
         if(oldStatistics == undefined || oldStatistics.length == 0)
@@ -193,6 +193,44 @@ class CarriersMgr {
         valuesToDelete["statistics." + typeFixed] = "";
 
         await this.db.deleteCarrierStatistics(carrier, airport, month, valuesToDelete);
+    }
+
+    async addSpecificCarrierStatistics(type, body, carrier, airport, month) {
+        if(type == "flights") {
+            var typeFixed = "flights";
+            var correctKeys = ['cancelled', 'on time', 'total', 'delayed', 'diverted'];
+        } else if (type == "delays") {
+            var typeFixed = "# of delays";
+            var correctKeys = ['late aircraft', 'weather', 'security', 'national aviation system', 'carrier'];
+        } else {
+            typeFixed = "minutes delayed";
+            var correctKeys = ['late aircraft', 'weather', 'security', 'national aviation system', 'carrier', 'total'];
+        }
+
+        // Before inserting we check that the document exists
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, 0, 1);
+        var oldStatistics = await cursor.toArray();
+        if(oldStatistics == undefined || oldStatistics.length == 0)
+            throw new Error('Not found');
+
+        var newKeys = Object.keys(body);
+
+        // Check that all the new keys are correct keys for the type
+        newKeys.forEach(key => {
+            if(! correctKeys.includes(key))
+                throw new Error("Bad json format");
+        });
+
+        var newValues = {};
+        newKeys.forEach(key => {
+            newValues["statistics."+typeFixed+"."+key] = body[key];
+        });
+
+        await this.db.updateCarrierStatistics(carrier, airport, month, newValues);
+
+        var newStatistics = await cursor.toArray();
+
+        return newStatistics[0];
     }
 }
 
