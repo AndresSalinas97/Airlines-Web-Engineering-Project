@@ -12,11 +12,10 @@ class DatabaseWrapper {
             if(err != null) {
                 logger.error("An ERROR occurred while trying to connect to MongoDB");
                 logger.error(err);
-            }
-			else {
+            } else {
                 logger.info("Connected correctly to MongoDB server");
                 this.collection = this.client.db('web').collection('airlines');
-			}
+            }
         });
     }
 
@@ -70,7 +69,7 @@ class DatabaseWrapper {
 		return await this.collection.find(query, options);
 	}
 
-    async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page) {
+    async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page, fields) {
         var query = {"carrier.code": carrier};
 
         if(airport != undefined) {
@@ -85,11 +84,16 @@ class DatabaseWrapper {
         var options = {
             "limit": per_page,
             "skip": firstItem,
-            "fields": {'_id': 0}
+            "fields": fields
         };
 
 		return await this.collection.find(query, options);
 	}
+
+	// async updateCarrierStatistic(updateObject, carrier, airport, month){
+	// 	var query = {"carrier.code": carrier, "airport.code": airport, "time.label":month};
+	// 	return await this.collection.update(query, updateObject);
+	// }
 
 }
 

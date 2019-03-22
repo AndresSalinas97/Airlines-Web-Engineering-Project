@@ -18,6 +18,9 @@ class CarriersMgr {
         else
             var carriers = await this.db.getAllCarriersPerAirport(airport);
 
+        if(carriers == undefined || carriers.length == 0)
+            throw new Error("Not found");
+
         carriers.forEach(carrier => {
             carrier.url = urlBegining + carrier.code;
         });
@@ -35,6 +38,10 @@ class CarriersMgr {
 
     async getCarrier(carrier) {
         var fullCarrier = await this.db.getCarrier(carrier);
+
+        if(fullCarrier == undefined)
+            throw new Error("Not found");
+
         var result = {data: fullCarrier.carrier};
         result.statistics = projectURL + "carriers/" + carrier + "/statistics/";
         return result;
@@ -50,6 +57,9 @@ class CarriersMgr {
 
         var statistics = await cursor.toArray();
         var total_count = await cursor.count();
+
+        if(statistics == undefined || statistics.length == 0)
+            throw new Error('Not found');
 
         var baseURL = projectURL+"carriers/"+carrier+"/statistics";
 
@@ -73,47 +83,72 @@ class CarriersMgr {
         return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
     }
 
-    // type can be "flights" || "# of delays" || "minutes delayed"
-    async getSpecificCarrierStatisticsPaginated(type, carrier, airport, month, page_number=1, per_page=30) {
+    // type can be "flights", "delays" or "minutes-delayed"
+    // select can contain "cancelled", "on-time", "total", "delayed", "diverted", "late-aircraft", "weather", "carrier", "security" "total" or "national-aviation-system"
+    async getSpecificCarrierStatisticsPaginated(type, select, carrier, airport, month, page_number=1, per_page=30) {
         var page_number = parseInt(page_number);
         var per_page = parseInt(per_page);
         var firstItem = (page_number-1) * per_page;
         var lastItem = firstItem + per_page;
 
-        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page);
+        if(select == undefined) {
+            if(type == "flights")
+                select = ["cancelled", "on-time", "total", "delayed", "diverted"];
+            else
+                select = ["late-aircraft", "weather", "carrier", "security", "total", "national-aviation-system"];
+        } else {
+            select = select.split(",");
+        }
+
+        if(type == "flights") {
+            var t = "statistics.flights";
+        } else if (type == "delays") {
+            var t = "statistics.# of delays";
+        } else {
+            var t = "statistics.minutes delayed";
+        }
+
+        var fields = {"airport":1, "time":1, "_id":0};
+        select.forEach(function(selection) {
+            fields[t+"."+selection.replace(/-/g, " ")] = 1;
+        });
+
+        var cursor = await this.db.getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page, fields);
 
         var fullStatistics = await cursor.toArray();
         var total_count = await cursor.count();
 
-        var baseURL = projectURL+"carriers/"+carrier+"/statistics/flights";
+        if(fullStatistics == undefined || fullStatistics.length == 0)
+            throw new Error('Not found');
 
-        var statistics = [];
-
-        fullStatistics.forEach(fullStatistic => {
-            var temp = {
-                "airport": fullStatistic.airport,
-                "carrier": fullStatistic.carrier,
-                "time": fullStatistic.time
-            };
-
-            if(type == "flights")
-                temp["flights"] = fullStatistic["statistics"]["flights"];
-            else if (type == "# of delays")
-                temp["# of delays"] = fullStatistic["statistics"]["# of delays"];
-            else
-                temp["minutes delayed"] = fullStatistic["statistics"]["minutes delayed"];
-
-            statistics.push(temp);
-        })
-
+        var baseURL = projectURL+"carriers/"+carrier+"/statistics/" + type;
         var extraURL = "";
         if(airport != undefined)
             extraURL = extraURL + "&airport=" + airport;
         if(month != undefined)
             extraURL = extraURL + "&month=" + month.replace('/', '-');
 
-        return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
+        return pagination.addPaginationMetaData(baseURL, fullStatistics, total_count, page_number, per_page, extraURL);
     }
+
+    // async updateSpecificCarrierStatistics(type, body, carrier, airport, month){
+    //     if(type == "flights"){
+    //         var t = "statistics.flights.";
+    //     }
+    //     else if (type == "delays"){
+    //         var t = "statistics.# of delays.";
+    //     }
+    //     else{
+    //         var t = "statistics.minutes delayed.";
+    //     }
+    //     var updateObject = {"$set":{}};
+    //     body.keys().forEach(key =>{
+    //         updateObject["$set"][t+key] = body[key];
+    //     });
+    //     var result = await this.db.updateCarrierStatistic(updateObject, carrier, airport, month);
+    //     console.log(result);
+    //     return result;
+    // }
 }
 
 module.exports.CarriersMgr = CarriersMgr

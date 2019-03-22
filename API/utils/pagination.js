@@ -6,6 +6,9 @@ module.exports = {
 
 function addPaginationMetaData(baseURL, dataArray, total_count, page_number, per_page, extra_url="")
 {
+    if(dataArray.length == 0)
+        throw new Error("Pagination error");
+
     var result = {};
 
     result.page_number = parseInt(page_number);

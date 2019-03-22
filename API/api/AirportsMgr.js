@@ -15,6 +15,9 @@ class AirportsMgr {
 
         var airports = await this.db.getAllAirports();
 
+        if(airports == undefined || airports.length == 0)
+            throw new Error("Not found");
+
         airports.forEach(airport => {
             airport.url = urlBegining + airport.code;
         });
@@ -29,9 +32,17 @@ class AirportsMgr {
 
     async getAirport(airport) {
         var fullAirport = await this.db.getAirport(airport);
+
+        if (fullAirport == undefined)
+            throw new Error("Not found");
+
         var result = {data: fullAirport.airport};
         return result;
     }
+
+    // async getDescriptiveStatisticsPaginated(carrier, airport, select, page, per_page){
+    //
+    // }
 }
 
 module.exports.AirportsMgr = AirportsMgr
