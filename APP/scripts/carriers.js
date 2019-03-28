@@ -4,7 +4,7 @@ const vm = new Vue({
       results:[],
     },
     mounted() {
-      axios.get("http://localhost:8080/airports?page=1&per_page=10")
+      axios.get("http://localhost:8080/carriers"+window.location.search)
       .then(response => {this.results = response.data.data})
       .catch(error =>{
         console.log(error.response)
@@ -12,4 +12,3 @@ const vm = new Vue({
     }
   });
   
-//localhost:8080/airports?page=1&per_page=10
