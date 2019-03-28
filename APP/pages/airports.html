@@ -6,21 +6,38 @@
     <meta charset="utf-8">
     <title>The greatest news app ever</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="../style.css">
 
     <script src="https://unpkg.com/vue"></script>
     <script type="module" src="../app.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
 
   </head>
  
   <body>
+      <div class="topnav">
+          <a class="active" href="/../index.html">Home</a>
+          <a href="airports.html">Airports</a>
+          <a href="airports.html">Carriers</a>
+          <a href="airports.html">Carriers Rankings</a>
+          <a href="airports.html">Delay Statistics</a>
+        </div>
+
+
+
  
     <div class="container" id="app">
-      <h3 class="text-center">VueNews</h3>
-    
-      <div class="columns medium-3" v-for="r in results">
-        <div class="card">
-          <div class="card-divider">
+      <h2 class="text-center">Airports</h2>
+    <pre>
+
+
+
+
+    </pre>
+ 
+        <div class="card"v-for="r in results">
+          <div class="card-divider" style="background:#6495ED">
             <p>{{ r.name }}</p>
           </div>
           <div class="card-section">
@@ -29,7 +46,10 @@
             <p><a v-bind:href="''">{{ r.url }}</a></p>
           </div>
         </div>
-      </div>
+        <pre>
+
+
+        </pre>
       
 
 
