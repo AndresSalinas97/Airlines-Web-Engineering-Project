@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>The greatest news app ever</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+
+    <script src="https://unpkg.com/vue"></script>
+    <script type="module" src="../app.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  </head>
+ 
+  <body>
+ 
+    <div class="container" id="app">
+      <h3 class="text-center">VueNews</h3>
+    
+      <div class="columns medium-3" v-for="r in results">
+        <div class="card">
+          <div class="card-divider">
+            <p>{{ r.name }}</p>
+          </div>
+          <div class="card-section">
+            <p>{{ r.name }}</p>
+            <p>{{ r.code }}</p>
+            <p><a v-bind:href="''">{{ r.url }}</a></p>
+          </div>
+        </div>
+      </div>
+      
+
+
+    </div>
+
+    
+
+
+ 
+</body>
+</html>

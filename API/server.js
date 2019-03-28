@@ -16,6 +16,7 @@ port = process.env.PORT || 8080;
 app.use (function(req, res, next) {
 	var data='';
 	req.setEncoding('utf8');
+    res.header("Access-Control-Allow-Origin", "*");
 	req.on('data', function(chunk) {
 	   data += chunk;
 	});
