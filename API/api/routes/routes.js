@@ -347,7 +347,8 @@ module.exports = function(app) {
         else
             res.json(result);
     });
-    
+
+    // Carrier User Ratings - Get user ratings for the carrier
     app.get("/carriers/:carrier/user-ratings", async function(req,res) {
         var carrier = req.params.carrier;
         var author = req.query.author;
@@ -374,7 +375,8 @@ module.exports = function(app) {
         else
             res.json(result);
     });
-    
+
+    // Carrier User Ratings - Add user rating for the carrier
     app.post("/carriers/:carrier/user-ratings", async function(req,res) {
         var carrier = req.params.carrier;
         var body = req.body;

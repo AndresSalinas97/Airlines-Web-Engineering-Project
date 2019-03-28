@@ -4,6 +4,17 @@ module.exports = {
     addPaginationMetaData
 }
 
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 function addPaginationMetaData(baseURL, dataArray, total_count, page_number, per_page, extra_url="")
 {
     if(dataArray.length == 0)

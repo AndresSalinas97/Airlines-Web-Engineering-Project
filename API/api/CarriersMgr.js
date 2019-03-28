@@ -43,7 +43,8 @@ class CarriersMgr {
             throw new Error("Not found");
 
         var result = {data: fullCarrier.carrier};
-        result.statistics = projectURL + "carriers/" + carrier + "/statistics/";
+        result["statistics"] = projectURL + "carriers/" + carrier + "/statistics/";
+        result["user-ratings"] = projectURL + "carriers/" + carrier + "/user-ratings/";
         return result;
     }
 

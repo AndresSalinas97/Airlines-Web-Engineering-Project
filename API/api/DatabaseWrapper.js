@@ -14,8 +14,8 @@ class DatabaseWrapper {
                 logger.error(err);
             } else {
                 logger.info("Connected correctly to MongoDB server");
-                this.collection = this.client.db('web').collection('airlines');
-                this.ratingscollection = this.client.db('web').collection('user_ratings');
+                this.airlinesCollection = this.client.db('web').collection('airlines');
+                this.ratingsCollection = this.client.db('web').collection('user_ratings');
             }
         });
     }
@@ -25,23 +25,23 @@ class DatabaseWrapper {
     }
 
     async getAllAirports() {
-        return await this.collection.distinct("airport");
+        return await this.airlinesCollection.distinct("airport");
     }
 
     async getAirport(airportCode) {
-        return await this.collection.findOne({"airport.code":airportCode});
+        return await this.airlinesCollection.findOne({"airport.code":airportCode});
     }
 
     async getAllCarriers() {
-        return await this.collection.distinct("carrier");
+        return await this.airlinesCollection.distinct("carrier");
     }
 
     async getAllCarriersPerAirport(airport) {
-        return await this.collection.distinct("carrier", {"airport.code": airport});
+        return await this.airlinesCollection.distinct("carrier", {"airport.code": airport});
     }
 
     async getCarrier(carrier) {
-        return await this.collection.findOne({"carrier.code":carrier});
+        return await this.airlinesCollection.findOne({"carrier.code":carrier});
     }
 
     async getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page) {
@@ -67,7 +67,7 @@ class DatabaseWrapper {
             }
         };
 
-        return await this.collection.find(query, options);
+        return await this.airlinesCollection.find(query, options);
     }
 
     async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page, fields) {
@@ -88,7 +88,7 @@ class DatabaseWrapper {
             "fields": fields
         };
 
-        return await this.collection.find(query, options);
+        return await this.airlinesCollection.find(query, options);
     }
 
     async updateCarrierStatistics(carrier, airport, month, newValues) {
@@ -100,7 +100,7 @@ class DatabaseWrapper {
 
         var updateOperators = {$set: newValues};
 
-        return await this.collection.updateOne(query, updateOperators);
+        return await this.airlinesCollection.updateOne(query, updateOperators);
     }
 
     async deleteCarrierStatistics(carrier, airport, month, valuesToDelete) {
@@ -112,10 +112,10 @@ class DatabaseWrapper {
 
         var updateOperators = {$unset: valuesToDelete};
 
-        return await this.collection.updateOne(query, updateOperators);
+        return await this.airlinesCollection.updateOne(query, updateOperators);
     }
 
-    async getRouteStatistics(airport, airport2, carrier, fields){
+    async getRouteStatistics(airport, airport2, carrier, fields) {
         var query = {
             "carrier.code": carrier,
             $or:[{"airport.code":airport}, {"airport.code":airport2}]
@@ -123,26 +123,27 @@ class DatabaseWrapper {
 
         var options = {"fields": fields};
 
-        return await this.collection.find(query, options).toArray();
+        return await this.airlinesCollection.find(query, options).toArray();
     }
-    
-    async getUserRatings(carrier, author, firstItem, per_page){
-		var query = {
-			"carrier": carrier,
-		}
-		if(author != undefined){
-			query["author"] = author;
-		}
-		var options = {
-			"limit": per_page,
-            "skip": firstItem
-		}
-		return await this.ratingscollection.find(query, options);
-	}
-	
-	async addUserRating(ratingObject){
-		return await this.ratingscollection.insertOne(ratingObject);
-	}
+
+    async getUserRatings(carrier, author, firstItem, per_page) {
+        var query = {
+            "carrier": carrier,
+        }
+        if(author != undefined){
+            query["author"] = author;
+        }
+        var options = {
+            "limit": per_page,
+            "skip": firstItem,
+            "fields": {"_id": 0}
+        }
+        return await this.ratingsCollection.find(query, options);
+    }
+
+    async addUserRating(ratingObject) {
+        return await this.ratingsCollection.insertOne(ratingObject);
+    }
 }
 
 

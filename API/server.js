@@ -12,6 +12,7 @@ const express = require('express'),
 app = express(),
 port = process.env.PORT || 8080;
 
+// Needed to get the body
 app.use (function(req, res, next) {
     var data='';
     req.setEncoding('utf8');
