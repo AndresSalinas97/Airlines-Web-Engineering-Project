@@ -1,3 +1,9 @@
+/**
+ * @file Winston configuration file.
+ *
+ * @author Stefan Valeanu
+ */
+
 var path = require("path");
 var fs = require("fs");
 var appRoot = require("app-root-path");

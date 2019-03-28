@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the addPaginationMetaData utility function.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 module.exports = {
@@ -5,15 +13,16 @@ module.exports = {
 }
 
 /**
+ * Adds the pagination metadata to the output.
  *
+ * @param baseURL         URL piece to be placed at the beginning of all the links
+ * @param dataArray       Array that contains only the elements to be returned
+ * @param total_count     Total number of elements in the original array
+ * @param page_number     Number of the current page
+ * @param per_page        Number of items per page
+ * @param [extra_url=""]  URL piece to be placed at the end of all the links
  *
- *
- *
- *
- *
- *
- *
- *
+ * @return {Object}       Object with the paginated result ready to be sent to the client as json
  */
 function addPaginationMetaData(baseURL, dataArray, total_count, page_number, per_page, extra_url="")
 {

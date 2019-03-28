@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the main entry point of our API server.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 var projectURL = "localhost:8080/";
