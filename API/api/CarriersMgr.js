@@ -232,6 +232,83 @@ class CarriersMgr {
 
         return newStatistics[0];
     }
+
+    // basedOn can be "flightsDelayed" or "minutesDelayed"
+    async getCarriersRankingsPaginated(month, basedOn, page_number=1, per_page=30) {
+        if(basedOn != "flightsDelayed" && basedOn != "minutesDelayed")
+            throw new Error("The introduced based-on variable is not an option");
+
+        if(basedOn == "flightsDelayed")
+            var fields = {"statistics.flights.total":1, "statistics.# of delays.carrier":1, "_id":0};
+        else
+            var fields = {"statistics.flights.total":1, "statistics.minutes delayed.carrier":1, "_id":0};
+
+        var carriers = await this.db.getAllCarriers();
+
+        // For every carrier...
+        for (var carrier of Object.values(carriers)) {
+            carrier["total flights"] = 0;
+
+            if(basedOn == "flightsDelayed")
+                carrier["flights delayed"] = 0;
+            else
+                carrier["minutes delayed"] = 0;
+
+            // ... get its statistics for the specified month (any airport)...
+            var cursor = await this.db.getCarrierStatisticsCursor(carrier.code, undefined, month, 0, 99999999, fields);
+            var stats = await cursor.toArray();
+
+            // ... and sum the values
+            for (var stat of Object.values(stats)) {
+                carrier["total flights"] += stat["statistics"]["flights"]["total"];
+
+                if(basedOn == "flightsDelayed")
+                    carrier["flights delayed"] += stat["statistics"]["# of delays"]["carrier"];
+                else
+                    carrier["minutes delayed"] += stat["statistics"]["minutes delayed"]["carrier"];
+            }
+        }
+
+        // Calculate average and remove carriers without flights
+        for(var i=0; i<carriers.length; i++) {
+            if(carriers[i]["total flights"] != 0) {
+                if(basedOn == "flightsDelayed")
+                    carriers[i]["proportion of flights delayed"] = carriers[i]["flights delayed"] / carriers[i]["total flights"];
+                else
+                    carriers[i]["minutes delayed per flight"] = carriers[i]["minutes delayed"] / carriers[i]["total flights"];
+            } else {
+                carriers.splice(i, 1);
+                i--;
+            }
+        }
+
+        // Sort based on the average value
+        if(basedOn == "flightsDelayed")
+            carriers.sort(function(a, b){return a["proportion of flights delayed"] - b["proportion of flights delayed"]});
+        else
+            carriers.sort(function(a, b){return a["minutes delayed per flight"] - b["minutes delayed per flight"]});
+
+        for(var i=0; i<carriers.length; i++) {
+            carriers[i]["ranking position"] = i+1;
+        }
+
+        var page_number = parseInt(page_number);
+        var per_page = parseInt(per_page);
+        var firstItem = (page_number-1) * per_page;
+        var lastItem = firstItem + per_page;
+
+        // Add pagination
+        var result = pagination.addPaginationMetaData(
+            projectURL+"rankings/carriers",
+            carriers.slice(firstItem, lastItem),
+            carriers.length,
+            page_number,
+            per_page,
+            "&month="+month+"&based-on="+basedOn
+        )
+
+        return result;
+    }
 }
 
 module.exports.CarriersMgr = CarriersMgr

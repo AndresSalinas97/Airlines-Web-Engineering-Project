@@ -310,6 +310,41 @@ module.exports = function(app) {
         else
             res.json(result);
     });
+
+    // Carrier Rankings - Ranking of carriers per month
+    app.get("/rankings/carriers", async function(req,res) {
+        var month = req.query["month"];
+        var basedOn = req.query["based-on"];
+        var page = req.query.page;
+        var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
+
+        if(month == undefined || basedOn == undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+            return;
+        }
+
+        try {
+            var result = await carriers.getCarriersRankingsPaginated(month, basedOn, page, per_page);
+        } catch (err) {
+            if(err.message == "Not found") {
+                res.status(404);
+                res.json({"message": "Not found"});
+                return;
+            } else {
+                console.log(err)
+                res.status(400);
+                res.json({"message": err.message});
+                return;
+            }
+        }
+
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
+    });
 };
 
 
