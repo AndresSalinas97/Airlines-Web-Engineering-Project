@@ -11,7 +11,7 @@ class CarriersMgr {
     }
 
     async getCarriersPaginated(page_number=1, per_page=30, airport) {
-        var urlBegining =  projectURL + "carriers/"
+        var urlBeginning =  projectURL + "carriers/";
 
         if(airport == undefined)
             var carriers = await this.db.getAllCarriers();
@@ -22,7 +22,7 @@ class CarriersMgr {
             throw new Error("Not found");
 
         carriers.forEach(carrier => {
-            carrier.url = urlBegining + carrier.code;
+            carrier.url = urlBeginning + carrier.code;
         });
 
         var page_number = parseInt(page_number);

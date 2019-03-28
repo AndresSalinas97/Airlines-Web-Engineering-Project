@@ -6,10 +6,12 @@ const Json2csvParser = require('json2csv').Parser;
 const { DatabaseWrapper } = require('../DatabaseWrapper')
 const { AirportsMgr } = require('../AirportsMgr')
 const { CarriersMgr } = require('../CarriersMgr')
+const { RatingsMgr } = require('../RatingsMgr')
 
 let mongoDB = new DatabaseWrapper();
 let airports = new AirportsMgr(mongoDB);
 let carriers = new CarriersMgr(mongoDB);
+let ratings = new RatingsMgr(mongoDB);
 
 
 module.exports = function(app) {
@@ -344,6 +346,65 @@ module.exports = function(app) {
             sendCSV(result, res);
         else
             res.json(result);
+    });
+    
+    app.get("/carriers/:carrier/user-ratings", async function(req,res) {
+        var carrier = req.params.carrier;
+        var author = req.query.author;
+        var page = req.query.page;
+        var per_page = req.query.per_page;
+        var contentType = req.get("Content-Type");
+
+        try {
+            var result = await ratings.getRatings(carrier, author, page, per_page);
+        } catch (err) {
+            if(err.message == "Not found") {
+                res.status(404);
+                res.json({"message": "Not found"});
+                return;
+            } else {
+                res.status(400);
+                res.json({"message": err.message});
+                return;
+            }
+        }
+
+        if(contentType == "text/csv")
+            sendCSV(result, res);
+        else
+            res.json(result);
+    });
+    
+    app.post("/carriers/:carrier/user-ratings", async function(req,res) {
+        var carrier = req.params.carrier;
+        var body = req.body;
+        var contentType = req.get("Content-Type");
+
+        if(body==undefined) {
+            res.status(400);
+            res.json({"message": "Parameters required"});
+        } else if (contentType != "application/json") {
+            res.status(400);
+            res.json({"message": "Only json input is supported"});
+        } else {
+            try {
+                body = JSON.parse(body);
+                body["carrier"] = carrier;
+                var result = await ratings.addRating(body);
+            } catch (err) {
+                if(err.message == "Not found") {
+                    res.status(404);
+                    res.json({"message": "Not found"});
+                    return;
+                } else {
+                    res.status(400);
+                    res.json({"message": err.message});
+                    return;
+                }
+            }
+            res.status(201);
+            res.json(result);
+        }
     });
 };
 

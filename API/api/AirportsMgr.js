@@ -13,7 +13,7 @@ class AirportsMgr {
     }
 
     async getAirportsPaginated(page_number=1, per_page=30) {
-        var urlBegining =  projectURL + "airports/"
+        var urlBeginning =  projectURL + "airports/"
 
         var airports = await this.db.getAllAirports();
 
@@ -21,7 +21,7 @@ class AirportsMgr {
             throw new Error("Not found");
 
         airports.forEach(airport => {
-            airport.url = urlBegining + airport.code;
+            airport.url = urlBeginning + airport.code;
         });
 
         page_number = parseInt(page_number);

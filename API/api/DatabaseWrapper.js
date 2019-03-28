@@ -10,11 +10,12 @@ class DatabaseWrapper {
         this.client = new MongoClient(this.uri, { useNewUrlParser: true });
         this.client.connect(err => {
             if(err != null) {
-                logger.error("An ERROR occurred while trying to connect to MongoDB");
+                logger.error("An error occurred while trying to connect to MongoDB");
                 logger.error(err);
             } else {
                 logger.info("Connected correctly to MongoDB server");
                 this.collection = this.client.db('web').collection('airlines');
+                this.ratingscollection = this.client.db('web').collection('user_ratings');
             }
         });
     }
@@ -124,6 +125,24 @@ class DatabaseWrapper {
 
         return await this.collection.find(query, options).toArray();
     }
+    
+    async getUserRatings(carrier, author, firstItem, per_page){
+		var query = {
+			"carrier": carrier,
+		}
+		if(author != undefined){
+			query["author"] = author;
+		}
+		var options = {
+			"limit": per_page,
+            "skip": firstItem
+		}
+		return await this.ratingscollection.find(query, options);
+	}
+	
+	async addUserRating(ratingObject){
+		return await this.ratingscollection.insertOne(ratingObject);
+	}
 }
 
 
