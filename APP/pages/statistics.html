@@ -1,92 +1,73 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+<head>
+  <meta charset="utf-8">
+  <title>Airlines API webapp</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+  <link rel="stylesheet" type="text/css" href="../style.css">
 
-    <meta charset="utf-8">
-    <title>Airlines API webapp</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
-    <link rel="stylesheet" type="text/css" href="../style.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script type="module" src="../scripts/statistics.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
 
-    <script src="https://unpkg.com/vue"></script>
-    <script type="module" src="../scripts/statistics.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<body>
+  <div class="topnav">
+    <a href="/../index">Home</a>
+    <a href="airports">Airports</a>
+    <a href="carriers">Carriers</a>
+    <a href="rankings">Carriers Rankings</a>
+    <a class="active" href="statistics">Delay Statistics</a>
+  </div>
 
+  <div class="container" id="app">
+    <h1 class="text-center">Delay Statistics</h1>
 
-  </head>
+    <br>
 
-  <body>
-      <div class="topnav">
-          <a href="/../index">Home</a>
-          <a href="airports">Airports</a>
-          <a href="carriers">Carriers</a>
-          <a href="rankings">Carriers Rankings</a>
-          <a class="active" href="statistics">Delay Statistics</a>
-        </div>
+    <center>
+      <div style="display:inline-block">
+      	Airport 1:<input type="text" v-model="airport">
+      	Airport 2:<input type="text" v-model="airport2">
+      	Carrier:<input type="text" v-model="carrier">
+      	<button v-on:click="filter">Filter</button>
+      </div>
+    </center>
 
+    <br><br><br>
 
-
-
-
-    <div class="container" id="app">
-      <h1 class="text-center">Delay Statistics</h1>
-    <pre>
-
-
-
-
-	 <div style="display:inline-block">
-		Airport 1:<input type="text" v-model="airport">
-		Airport 2:<input type="text" v-model="airport2">
-		Carrier:<input type="text" v-model="carrier">
-		<button v-on:click="filter">Filter</button>
-	</div>
-
-
-
-
-    </pre>
-
-        <div class="card">
-          <div class="card-divider" style="background:#6495ED">
-            <p>Statistics on flights</p>
-          </div>
-          <div class="card-section" v-if="results">
-            <strong>Late aircraft</strong>
-            <p>Mean: {{results["late aircraft"]["mean"]}}</p>
-            <p>Median: {{results["late aircraft"]["median"]}}</p>
-            <p>Standard deviation: {{results["late aircraft"]["std"]}}</p>
-            <strong>Weather</strong>
-            <p>Mean: {{results["weather"]["mean"]}}</p>
-            <p>Median: {{results["weather"]["median"]}}</p>
-            <p>Standard deviation: {{results["weather"]["std"]}}</p>
-            <strong>Carrier</strong>
-            <p>Mean: {{results["carrier"]["mean"]}}</p>
-            <p>Median: {{results["carrier"]["median"]}}</p>
-            <p>Standard deviation: {{results["carrier"]["std"]}}</p>
-            <strong>Security</strong>
-            <p>Mean: {{results["security"]["mean"]}}</p>
-            <p>Median: {{results["security"]["median"]}}</p>
-            <p>Standard deviation: {{results["security"]["std"]}}</p>
-            <strong>National aviation system</strong>
-            <p>Mean: {{results["national aviation system"]["mean"]}}</p>
-            <p>Median: {{results["national aviation system"]["median"]}}</p>
-            <p>Standard deviation: {{results["national aviation system"]["std"]}}</p>
-
-          </div>
-        </div>
-        <pre>
-
-
-        </pre>
-
-
-
+    <div class="card">
+      <div class="card-divider" style="background:#6495ED">
+        <p>Statistics on flights</p>
+      </div>
+      <div class="card-section" v-if="results">
+        <strong>Late aircraft</strong>
+        <p>Mean: {{results["late aircraft"]["mean"]}}</p>
+        <p>Median: {{results["late aircraft"]["median"]}}</p>
+        <p>Standard deviation: {{results["late aircraft"]["std"]}}</p>
+        <strong>Weather</strong>
+        <p>Mean: {{results["weather"]["mean"]}}</p>
+        <p>Median: {{results["weather"]["median"]}}</p>
+        <p>Standard deviation: {{results["weather"]["std"]}}</p>
+        <strong>Carrier</strong>
+        <p>Mean: {{results["carrier"]["mean"]}}</p>
+        <p>Median: {{results["carrier"]["median"]}}</p>
+        <p>Standard deviation: {{results["carrier"]["std"]}}</p>
+        <strong>Security</strong>
+        <p>Mean: {{results["security"]["mean"]}}</p>
+        <p>Median: {{results["security"]["median"]}}</p>
+        <p>Standard deviation: {{results["security"]["std"]}}</p>
+        <strong>National aviation system</strong>
+        <p>Mean: {{results["national aviation system"]["mean"]}}</p>
+        <p>Median: {{results["national aviation system"]["median"]}}</p>
+        <p>Standard deviation: {{results["national aviation system"]["std"]}}</p>
+      </div>
     </div>
 
+    <br><br>
 
-
-
+  </div>
 
 </body>
 </html>
