@@ -343,7 +343,6 @@ module.exports = function(app) {
 				res.json({"message": "Not found"});
 				return;
 			} else {
-				console.log(err)
 				res.status(400);
 				res.json({"message": err.message});
 				return;
