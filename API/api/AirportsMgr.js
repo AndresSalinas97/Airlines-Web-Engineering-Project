@@ -38,8 +38,8 @@ class AirportsMgr {
 	 *
 	 * @return {Object} Object with the paginated result ready to be sent to the client as json
 	 */
-	async getAirportsPaginated(page_number=1,  [per_page=30]) {
-		var urlBeginning =  projectURL + "airports/"
+	async getAirportsPaginated(page_number=1, per_page=30) {
+		var urlBeginning =  projectURL + "airports/";
 
 		var airports = await this.db.getAllAirports();
 
