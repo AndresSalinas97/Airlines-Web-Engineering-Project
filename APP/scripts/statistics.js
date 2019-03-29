@@ -1,4 +1,3 @@
-//localhost:8080/rankings/carriers?month=2015-6&based-on=flightsDelayed&per_page=10
 const vm = new Vue({
     el: '#app',
     data: {

@@ -26,7 +26,7 @@ app.get('/scripts/airport.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/scripts/airport.js'));
 });
 app.get('/scripts/carrier.js', function (req, res) {
-    res.sendFile(path.join(__dirname + '/scripts/airport.js'));
+    res.sendFile(path.join(__dirname + '/scripts/carrier.js'));
 });
 
 //style
