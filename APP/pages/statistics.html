@@ -4,12 +4,12 @@
   <head>
 
     <meta charset="utf-8">
-    <title>The greatest news app ever</title>
+    <title>Airlines API webapp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="../style.css">
 
     <script src="https://unpkg.com/vue"></script>
-    <script type="module" src="../scripts/rankings.js"></script>
+    <script type="module" src="../scripts/statistics.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     
 
@@ -17,11 +17,11 @@
  
   <body>
       <div class="topnav">
-          <a href="/../index.html">Home</a>
-          <a href="airports.html">Airports</a>
-          <a href="carriers.html">Carriers</a>
-          <a href="rankings.html">Carriers Rankings</a>
-          <a class="active" href="statistics.html">Delay Statistics</a>
+          <a href="/../index">Home</a>
+          <a href="airports">Airports</a>
+          <a href="carriers">Carriers</a>
+          <a href="rankings">Carriers Rankings</a>
+          <a class="active" href="statistics">Delay Statistics</a>
         </div>
 
 
@@ -36,17 +36,31 @@
 
     </pre>
  
-        <div class="card"v-for="r in results">
+        <div class="card">
           <div class="card-divider" style="background:#6495ED">
-            <p>{{ r.name }}</p>
+            <p>Statistics on flights</p>
           </div>
-          <div class="card-section">
-            <p>Name: {{ r.name }}</p>
-            <p>Code: {{ r.code }}</p>
-            <p>Total delayed: {{ r["flights delayed"] }}</p>
-            <p>Total flights: {{ r["total flights"] }}</p>
-            <p>Proportion of flights delayed: {{ r["proportion of flights delayed"] }}</p>
-            <p>Ranking position: {{ r["ranking position"] }}</p>
+          <div class="card-section" v-if="results">
+            <strong>Late aircraft</strong>
+            <p>Mean: {{results["late aircraft"]["mean"]}}</p>
+            <p>Median: {{results["late aircraft"]["median"]}}</p>
+            <p>Standard deviation: {{results["late aircraft"]["std"]}}</p>
+            <strong>Weather</strong>
+            <p>Mean: {{results["weather"]["mean"]}}</p>
+            <p>Median: {{results["weather"]["median"]}}</p>
+            <p>Standard deviation: {{results["weather"]["std"]}}</p>
+            <strong>Carrier</strong>
+            <p>Mean: {{results["carrier"]["mean"]}}</p>
+            <p>Median: {{results["carrier"]["median"]}}</p>
+            <p>Standard deviation: {{results["carrier"]["std"]}}</p>
+            <strong>Security</strong>
+            <p>Mean: {{results["security"]["mean"]}}</p>
+            <p>Median: {{results["security"]["median"]}}</p>
+            <p>Standard deviation: {{results["security"]["std"]}}</p>
+            <strong>National aviation system</strong>
+            <p>Mean: {{results["national aviation system"]["mean"]}}</p>
+            <p>Median: {{results["national aviation system"]["median"]}}</p>
+            <p>Standard deviation: {{results["national aviation system"]["std"]}}</p>
 
           </div>
         </div>

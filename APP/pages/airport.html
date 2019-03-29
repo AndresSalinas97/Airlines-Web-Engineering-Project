@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <title>Airlines API webapp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+    <link rel="stylesheet" type="text/css" href="/../style.css">
+
+    <script src="https://unpkg.com/vue"></script>
+    <script type="module" src="/../scripts/airport.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
+
+  </head>
+ 
+  <body>
+      <div class="topnav">
+          <a href="/../../index">Home</a>
+          <a class="active" href="/../airports">Airports</a>
+          <a href="/../carriers">Carriers</a>
+          <a href="/../rankings">Carriers Rankings</a>
+          <a href="/../statistics">Delay Statistics</a>
+        </div>
+
+
+
+ 
+    <div class="container" id="app">
+      <h2 class="text-center">Airport</h2>
+    <pre>
+
+
+
+
+    </pre>
+ 
+        <div class="card">
+          <div class="card-divider" style="background:#6495ED">
+            <p>{{ results.name }}</p>
+          </div>
+          <div class="card-section" v-if="results.timezone">
+            <p>Code: {{ results.code }}</p>
+            <p>Timezone: {{ results.timezone }}</p>
+            <p>Google Maps: <a :href="results.googlemaps">{{results.googlemaps}}</a></p>
+          </div>
+        </div>
+        <pre>
+
+
+        </pre>
+      
+
+
+    </div>
+
+    
+
+
+ 
+</body>
+</html>

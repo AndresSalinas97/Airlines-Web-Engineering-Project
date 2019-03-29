@@ -4,12 +4,12 @@
   <head>
 
     <meta charset="utf-8">
-    <title>The greatest news app ever</title>
+    <title>Airlines API webapp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
     <link rel="stylesheet" type="text/css" href="../style.css">
 
     <script src="https://unpkg.com/vue"></script>
-    <script type="module" src="../scripts/carriers.js"></script>
+    <script type="module" src="/../scripts/carriers.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     
 
@@ -17,11 +17,11 @@
  
   <body>
       <div class="topnav">
-          <a href="/../index.html">Home</a>
-          <a href="airports.html">Airports</a>
-          <a class="active"href="carriers.html">Carriers</a>
-          <a href="rankings.html">Carriers Rankings</a>
-          <a href="statistics.html">Delay Statistics</a>
+          <a href="/../index">Home</a>
+          <a href="airports">Airports</a>
+          <a class="active"href="carriers">Carriers</a>
+          <a href="rankings">Carriers Rankings</a>
+          <a href="statistics">Delay Statistics</a>
         </div>
 
 
@@ -41,9 +41,7 @@
             <p>{{ r.name }}</p>
           </div>
           <div class="card-section">
-            <p>{{ r.name }}</p>
-            <p>{{ r.code }}</p>
-            <p><a v-bind:href="''">{{ r.url }}</a></p>
+            <p><a v-bind:href="'carriers/' + r.code">{{ r.code }}</a></p>
           </div>
         </div>
         <pre>

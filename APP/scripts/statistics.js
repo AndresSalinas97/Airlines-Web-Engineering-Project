@@ -2,10 +2,10 @@
 const vm = new Vue({
     el: '#app',
     data: {
-      results:[],
+      results:''
     },
     mounted() {
-      axios.get("http://localhost:8080/rankings/carriers?month=2015-6&based-on=flightsDelayed"+ window.location.search)
+      axios.get("http://localhost:8080/airports/ATL/delaystats?airport=BOS&carrier=AA"+ window.location.search)
       .then(response => {
           this.results = response.data.data
     })

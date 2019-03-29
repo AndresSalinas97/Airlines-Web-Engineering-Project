@@ -22,6 +22,12 @@ app.get('/scripts/rankings.js', function (req, res) {
 app.get('/scripts/statistics.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/scripts/statistics.js'));
 });
+app.get('/scripts/airport.js', function (req, res) {
+    res.sendFile(path.join(__dirname + '/scripts/airport.js'));
+});
+app.get('/scripts/carrier.js', function (req, res) {
+    res.sendFile(path.join(__dirname + '/scripts/airport.js'));
+});
 
 //style
 app.get('/style.css', function (req, res) {
@@ -33,23 +39,29 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get('/index.html', function(req, res) {
+app.get('/index', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 //pages
-app.get('/pages/airports.html', function (req, res) {
+app.get('/airports', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/airports.html'));
 });
 
-app.get('/pages/carriers.html', function (req, res) {
+app.get('/carriers', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/carriers.html'));
 });
 
-app.get('/pages/rankings.html', function (req, res) {
+app.get('/rankings', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/rankings.html'));
 });
-app.get('/pages/statistics.html', function (req, res) {
+app.get('/airports/:airport', function (req, res) {
+    res.sendFile(path.join(__dirname + '/pages/airport.html'));
+});
+app.get('/carriers/:carrier', function (req, res) {
+    res.sendFile(path.join(__dirname + '/pages/carrier.html'));
+});
+app.get('/statistics', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/statistics.html'));
 });
 
