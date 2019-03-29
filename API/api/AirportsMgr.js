@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the AirportsMgr class.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 const pagination = require('../utils/pagination')
@@ -7,12 +15,30 @@ const stats = require('stats-lite')
 var projectURL = server.projectURL;
 
 
+/**
+ * AirportsMgr class.
+ *
+ * Airports manager: gets the data from the database and generates the output for the different requests regarding airports.
+ */
 class AirportsMgr {
+	/**
+	 * Constructor for the AirportsMgr class.
+	 *
+	 * Stores the DatabaseWrapper object to connect to mongoDB.
+	 */
 	constructor(db) {
 		this.db = db;
 	}
 
-	async getAirportsPaginated(page_number=1, per_page=30) {
+	/**
+	 * Returns all airports. Output is paginated and includes pagination metadata.
+	 *
+	 * @param [page_number=1]  number of the current page
+	 * @param [per_page=30]    number of items per page
+	 *
+	 * @return {Object} Object with the paginated result ready to be sent to the client as json
+	 */
+	async getAirportsPaginated(page_number=1,  [per_page=30]) {
 		var urlBeginning =  projectURL + "airports/"
 
 		var airports = await this.db.getAllAirports();
@@ -32,6 +58,13 @@ class AirportsMgr {
 		return pagination.addPaginationMetaData(projectURL+"airports", airports.slice(firstItem, lastItem), airports.length, page_number, per_page);
 	}
 
+	/**
+	 * Returns the selected airport
+	 *
+	 * @param airport airport code
+	 *
+	 * @return {Object} Object with the result ready to be sent to the client as json
+	 */
 	async getAirport(airport) {
 		var fullAirport = await this.db.getAirport(airport);
 
@@ -42,6 +75,16 @@ class AirportsMgr {
 		return result;
 	}
 
+	/**
+	 * Returns descriptive statistics for carrier-specific delays.
+	 *
+	 * @param airport   airport 1 code
+	 * @param airport2  airport 2 code
+	 * @param carrier   carrier code
+	 * @param select    Can be ‘late-aircraft’, ‘weather’, ‘carrier’, ‘security’, ‘total’ or ‘national-aviation-system’.
+	 * 	 *
+	 * @return {Object} Object with the result ready to be sent to the client as json
+	 */
 	async getStats(airport, airport2, carrier, select) {
 		if(select == undefined) {
 			select = ["late-aircraft", "weather", "carrier", "security", "total", "national-aviation-system"];

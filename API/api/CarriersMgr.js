@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the CarriersMgr class.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 const pagination = require('../utils/pagination')
@@ -5,11 +13,30 @@ const server = require('../server')
 var projectURL = server.projectURL;
 
 
+/**
+ * CarriersMgr class.
+ *
+ * Carriers manager: gets the data from the database and generates the output for the different requests regarding carriers.
+ */
 class CarriersMgr {
+	/**
+	 * Constructor for the CarriersMgr class.
+	 *
+	 * Stores the DatabaseWrapper object to connect to mongoDB.
+	 */
 	constructor(db) {
 		this.db = db;
 	}
 
+	/**
+	 * Returns all carriers. It can be filtered by airport. Output is paginated and includes pagination metadata.
+	 *
+	 * @param [page_number=1]  number of the current page
+	 * @param [per_page=30]    number of items per page
+	 * @param [airport]        airport code
+	 *
+	 * @return {Object} Object with the paginated result ready to be sent to the client as json
+	 */
 	async getCarriersPaginated(page_number=1, per_page=30, airport) {
 		var urlBeginning =  projectURL + "carriers/";
 
@@ -36,6 +63,13 @@ class CarriersMgr {
 			return pagination.addPaginationMetaData(projectURL+"carriers", carriers.slice(firstItem, lastItem), carriers.length, page_number, per_page, "&airport="+airport);
 	}
 
+	/**
+	 * Return the specified carrier.
+	 *
+	 * @param carrier carrier code
+	 *
+	 * @return {Object} Object with the result ready to be sent to the client as json
+	 */
 	async getCarrier(carrier) {
 		var fullCarrier = await this.db.getCarrier(carrier);
 
@@ -48,6 +82,17 @@ class CarriersMgr {
 		return result;
 	}
 
+	/**
+	 * Returns carrier statistics (only links). Output is paginated and includes pagination metadata.
+	 *
+	 * @param carrier          carrier code
+	 * @param [airport]        airport code
+	 * @param [month]          month in format yyyy-(m)m
+	 * @param [page_number=1]  number of the current page
+	 * @param [per_page=30]    number of items per page
+	 *
+	 * @return {Object} Object with the paginated result ready to be sent to the client as json
+	 */
 	async getCarrierStatisticsPaginated(carrier, airport, month, page_number=1, per_page=30) {
 		var page_number = parseInt(page_number);
 		var per_page = parseInt(per_page);
@@ -84,8 +129,19 @@ class CarriersMgr {
 		return pagination.addPaginationMetaData(baseURL, statistics, total_count, page_number, per_page, extraURL);
 	}
 
-	// type can be "flights", "delays" or "minutes-delayed"
-	// select can contain "cancelled", "on-time", "total", "delayed", "diverted", "late-aircraft", "weather", "carrier", "security" "total" or "national-aviation-system"
+	/**
+	 * Returns the specified statistics of the specified carrier. Output is paginated and includes pagination metadata.
+	 *
+	 * @param type             type can be "flights", "delays" or "minutes-delayed"
+	 * @param [select]         select can contain "cancelled", "on-time", "total", "delayed", "diverted", "late-aircraft", "weather", "carrier", "security" "total" or "national-aviation-system"
+	 * @param carrier          carrier code
+	 * @param [airport]        airport code
+	 * @param [month]          month in format yyyy-(m)m
+	 * @param [page_number=1]  number of the current page
+	 * @param [per_page=30]    number of items per page
+	 *
+	 * @return {Object} Object with the paginated result ready to be sent to the client as json
+	 */
 	async getSpecificCarrierStatisticsPaginated(type, select, carrier, airport, month, page_number=1, per_page=30) {
 		var page_number = parseInt(page_number);
 		var per_page = parseInt(per_page);
@@ -132,6 +188,17 @@ class CarriersMgr {
 		return pagination.addPaginationMetaData(baseURL, fullStatistics, total_count, page_number, per_page, extraURL);
 	}
 
+	/**
+	 * Updates the specified specific statistics.
+	 *
+	 * @param type     type can be "flights", "delays" or "minutes-delayed"
+	 * @param body     object with the new values
+	 * @param carrier  carrier code
+	 * @param airport  airport code
+	 * @param month    month in format yyyy-(m)m
+	 *
+	 * @return {Object} Object with the result ready to be sent to the client as json
+	 */
 	async updateSpecificCarrierStatistics(type, body, carrier, airport, month) {
 		if(type == "flights") {
 			var t = "statistics.flights";
@@ -175,6 +242,14 @@ class CarriersMgr {
 		return newStatistics[0];
 	}
 
+	/**
+	 * Deletes the specified carrier statistics
+	 *
+	 * @param type     type can be "flights", "delays" or "minutes-delayed"
+	 * @param carrier  carrier code
+	 * @param airport  airport code
+	 * @param month    month in format yyyy-(m)m
+	 */
 	async deleteSpecificCarrierStatistics(type, carrier, airport, month) {
 		if(type == "flights") {
 			var typeFixed = "flights";
@@ -196,6 +271,17 @@ class CarriersMgr {
 		await this.db.deleteCarrierStatistics(carrier, airport, month, valuesToDelete);
 	}
 
+	/**
+	 * Adds new specific carrier statistics.
+	 *
+	 * @param type     type can be "flights", "delays" or "minutes-delayed"
+	 * @param body     object with the new values
+	 * @param carrier  carrier code
+	 * @param airport  airport code
+	 * @param month    month in format yyyy-(m)m
+	 *
+	 * @return {Object} Object with the result ready to be sent to the client as json
+	 */
 	async addSpecificCarrierStatistics(type, body, carrier, airport, month) {
 		if(type == "flights") {
 			var typeFixed = "flights";
@@ -234,7 +320,16 @@ class CarriersMgr {
 		return newStatistics[0];
 	}
 
-	// basedOn can be "flightsDelayed" or "minutesDelayed"
+	/**
+	 * Gets user rankings for the carrier for the month. Output is paginated and includes pagination metadata.
+	 *
+	 * @param month            month in format yyyy-(m)m
+	 * @param basedOn          basedOn can be "flightsDelayed" or "minutesDelayed"
+	 * @param [page_number=1]  number of the current page
+	 * @param [per_page=30]    number of items per page
+	 *
+	 * @return {Object} Object with the paginated result ready to be sent to the client as json
+	 */
 	async getCarriersRankingsPaginated(month, basedOn, page_number=1, per_page=30) {
 		if(basedOn != "flightsDelayed" && basedOn != "minutesDelayed")
 			throw new Error("The introduced based-on variable is not an option");
@@ -245,6 +340,10 @@ class CarriersMgr {
 			var fields = {"statistics.flights.total":1, "statistics.minutes delayed.carrier":1, "_id":0};
 
 		var carriers = await this.db.getAllCarriers();
+
+		// Check that we have carriers
+		if(carriers == undefined || carriers.length == 0)
+			throw new Error("Not found");
 
 		// For every carrier...
 		for (var carrier of Object.values(carriers)) {
@@ -282,6 +381,10 @@ class CarriersMgr {
 				i--;
 			}
 		}
+
+		// Check that we still have carriers
+		if(carriers.length == 0)
+			throw new Error("Not found");
 
 		// Sort based on the average value
 		if(basedOn == "flightsDelayed")

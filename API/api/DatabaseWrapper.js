@@ -1,10 +1,30 @@
+/**
+ * @file This file contains the DatabaseWrapper class.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 const MongoClient = require('mongodb').MongoClient;
 const logger = require('../utils/logger')
 
 
+/**
+ * DatabaseWrapper class.
+ *
+ * Wrapper for the mongoDB database.
+ */
 class DatabaseWrapper {
+	/**
+	 * Constructor for the DatabaseWrapper class.
+	 *
+	 * Connects to mongoDB.
+	 *
+	 * @warning Uploading passwords to github is not very safe...
+	 */
 	constructor() {
 		this.uri = "mongodb+srv://admin:admin@cluster0-q0yt0.gcp.mongodb.net/test?retryWrites=true";
 		this.client = new MongoClient(this.uri, { useNewUrlParser: true });
@@ -20,30 +40,77 @@ class DatabaseWrapper {
 		});
 	}
 
+	/**
+	 * Destructor for the DatabaseWrapper class.
+	 *
+	 * Closes MongoClient.
+	 */
 	destructor() {
 		this.client.close();
 	}
 
+	/**
+	 * Gets all airports.
+	 *
+	 * @return Array of objects
+	 */
 	async getAllAirports() {
 		return await this.airlinesCollection.distinct("airport");
 	}
 
+	/**
+	 * Gets the airport with the inserted airportCode.
+	 *
+	 * @param airportCode  airport code
+	 *
+	 * @return Object
+	 */
 	async getAirport(airportCode) {
 		return await this.airlinesCollection.findOne({"airport.code":airportCode});
 	}
 
+	/**
+	 * Gets all carriers.
+	 *
+	 * @return Array of objects
+	 */
 	async getAllCarriers() {
 		return await this.airlinesCollection.distinct("carrier");
 	}
 
+	/**
+	 * Gets all carriers operating at a specific US airport.
+	 *
+	 * @param airport airport code
+	 *
+	 * @return Array of objects
+	 */
 	async getAllCarriersPerAirport(airport) {
 		return await this.airlinesCollection.distinct("carrier", {"airport.code": airport});
 	}
 
+	/**
+	 * Gets the carrier with the inserted carrier code.
+	 *
+	 * @param carrier  carrier code
+	 *
+	 * @return Object
+	 */
 	async getCarrier(carrier) {
 		return await this.airlinesCollection.findOne({"carrier.code":carrier});
 	}
 
+	/**
+	 * Gets the mongo cursor to get statistics about all flights of a carrier with the statistics fields empty (they will be replaced by links). It can be filtered by airport and month. Includes pagination.
+	 *
+	 * @param carrier    carrier code
+	 * @param [airport]  airport code
+	 * @param [month]    month in format yyyy-(m)m
+	 * @param firstItem  first item to get (for pagination purposes)
+	 * @param per_page   number of items to get (for pagination purposes)
+	 *
+	 * @return MongoClient cursor
+	 */
 	async getCarrierEmptyStatisticsCursor(carrier, airport, month, firstItem, per_page) {
 		var query = {"carrier.code": carrier};
 
@@ -70,6 +137,18 @@ class DatabaseWrapper {
 		return await this.airlinesCollection.find(query, options);
 	}
 
+	/**
+	 * Gets the mongo cursor to get statistics about all flights of a carrier. It can be filtered by airport and month. Includes pagination. Output fields can be specified with fields.
+	 *
+	 * @param carrier    carrier code
+	 * @param [airport]  airport code
+	 * @param [month]    month in format yyyy-(m)m
+	 * @param firstItem  first item to get (for pagination purposes)
+	 * @param per_page   number of items to get (for pagination purposes)
+	 * @param fields     object with the fields to be returned or ignored
+	 *
+	 * @return MongoClient cursor
+	 */
 	async getCarrierStatisticsCursor(carrier, airport, month, firstItem, per_page, fields) {
 		var query = {"carrier.code": carrier};
 
@@ -91,6 +170,16 @@ class DatabaseWrapper {
 		return await this.airlinesCollection.find(query, options);
 	}
 
+	/**
+	 * Updates carrier statistics
+	 *
+	 * @param carrier    carrier code
+	 * @param airport    airport code
+	 * @param month      month in format yyyy-(m)m
+	 * @param newValues  new values ({field: value})
+	 *
+	 * @return result of calling updateOne
+	 */
 	async updateCarrierStatistics(carrier, airport, month, newValues) {
 		var query = {
 			"carrier.code": carrier,
@@ -103,6 +192,16 @@ class DatabaseWrapper {
 		return await this.airlinesCollection.updateOne(query, updateOperators);
 	}
 
+	/**
+	 * Deletes the specified carrier statistics
+	 *
+	 * @param carrier         carrier code
+	 * @param airport         airport code
+	 * @param month           month in format yyyy-(m)m
+	 * @param valuesToDelete  fields to be deleted ({field: anyValue})
+	 *
+	 * @return result of calling updateOne
+	 */
 	async deleteCarrierStatistics(carrier, airport, month, valuesToDelete) {
 		var query = {
 			"carrier.code": carrier,
@@ -115,6 +214,16 @@ class DatabaseWrapper {
 		return await this.airlinesCollection.updateOne(query, updateOperators);
 	}
 
+	/**
+	 * Gets all statistics involving airport or airport2 and carrier. Output fields can be specified with fields.
+	 *
+	 * @param airport   airport 1 code
+	 * @param airport2  airport 2 code
+	 * @param carrier   carrier code
+	 * @param fields    object with the fields to be returned or ignored
+	 *
+	 * @return Array of objects
+	 */
 	async getRouteStatistics(airport, airport2, carrier, fields) {
 		var query = {
 			"carrier.code": carrier,
@@ -126,6 +235,16 @@ class DatabaseWrapper {
 		return await this.airlinesCollection.find(query, options).toArray();
 	}
 
+	/**
+	 * Get user ratings of the carrier. It can be filtered by author. Includes pagination.
+	 *
+	 * @param carrier    carrier code
+	 * @param [author]   author code
+	 * @param firstItem  first item to get (for pagination purposes)
+	 * @param per_page   number of items to get (for pagination purposes)
+	 *
+	 * @return Array of objects
+	 */
 	async getUserRatings(carrier, author, firstItem, per_page) {
 		var query = {
 			"carrier": carrier,
@@ -141,6 +260,13 @@ class DatabaseWrapper {
 		return await this.ratingsCollection.find(query, options);
 	}
 
+	/**
+	 * Add new rating for the carrier
+	 *
+	 * @param ratingObject
+	 *
+	 * @return result of calling insertOne
+	 */
 	async addUserRating(ratingObject) {
 		return await this.ratingsCollection.insertOne(ratingObject);
 	}
