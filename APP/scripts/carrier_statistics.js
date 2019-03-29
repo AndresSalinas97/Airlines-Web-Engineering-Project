@@ -4,7 +4,7 @@ const vm = new Vue({
       results:'',
       month:'',
       airport:'',
-      jason:{}
+      jason:''
     },
     mounted() {
 		var str = window.location.pathname.split("/");

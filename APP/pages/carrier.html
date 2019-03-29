@@ -32,7 +32,9 @@
         </div>
         <div class="card-section">
           <p>Code: {{ results.code }}</p>
-          <p>Flight and delay statistics: <a :href='results.code+"/statistics"'>/statistics</a></p>
+          <p>Flight statistics: <a :href='results.code+"/flights"'>{{results.code+"/flights"}}</a></p>
+          <p>Delay statistics: <a :href='results.code+"/delays"'>{{results.code+"/delays"}}</a></p>
+          <p>Delay statistics in minutes: <a :href='results.code+"/minutes-delayed"'>{{results.code+"/minutes-delayed"}}</a></p>
         </div>
       </div>
 
