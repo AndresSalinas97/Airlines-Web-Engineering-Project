@@ -10,12 +10,17 @@ The API folder contains our node API. To use node to run it, install npm and nod
 inside the API folder, followed by
 `node server.js`
 . After this, the server will wait for requests on localhost:8080.
+Performing the same steps in the APP folder will start the app, it will wait for requests on localhost:3000.
 
 ### Choice of technologies
 We picked the node framework combined with express and a mongodb database, because two of us had worked with them before. In this particular project, we had to work with json which is easy to do with each of these. There are also many node libraries that can easily be added using npm.
 
+For the webapp, we used vuejs with HTML to easily be able to refer to variables in javascript code in the HTML files and because it was featured in one of the tutorials. Since we did not have time to make a complex webapp, we did not get a chance to use more of vue's features.
+
 ### Extensions
 Two extensions were added to the API that implement additional endpoints beside the ones required in the project description. Firstly, there is the option to see rankings of different carriers based on carrier-specific delay information in both minutes and number of delays. Secondly, comments with user scores can be added to each carrier, which are stored in a separate collection from the airlines data, and these can also be viewed. The exact requests and results that the endpoints offer can be found in the API documentation.
+
+The project description also mentions a requirement to use a 3rd party API in the web app. This was implemented in the airports/:airport route, in order to show the timezone and a link to the location of the airport in google maps.
 
 ### Architectural overview
 The API folder contains server, routes, database wrapper, utilities and manager files as well as the files needed for node projects and libraries.
@@ -27,6 +32,8 @@ The carrier, ratings and airport manager receive requests and generate the resul
 The database wrapper uses the mongodb driver's find, distinct and update functions to read and manipulate the data as needed. The data itself is stored in a mongodb Atlas cloud database.
 
 With these components, the server is able to receive requests, retrieve or modify the data needed for the request and show a corresponding result.
+
+The APP folder contains a server file and one html and one javascript file for each page. Each javascript file retrieves the data that the page needs from the API and puts it in a variable that the HTML is then able to access from the Vue class.
 
 ### Design principles
 In designing the API, the principles of REST were to be taken into account. Below is an explanation of how each of the REST principles were incorporated into the final design of the API.
