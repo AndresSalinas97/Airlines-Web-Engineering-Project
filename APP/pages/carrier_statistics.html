@@ -13,60 +13,39 @@
 </head>
 
 <body>
+	
   <div class="topnav">
-    <a href="/../../index">Home</a>
-    <a href="/../airports">Airports</a>
-    <a href="/../carriers">Carriers</a>
-    <a href="/../rankings">Carriers Rankings</a>
-    <a href="/../statistics">Delay Statistics</a>
+    <a href="/../../../../index">Home</a>
+    <a href="/../../../airports">Airports</a>
+    <a href="/../../../carriers">Carriers</a>
+    <a href="/../../../rankings">Carriers Rankings</a>
+    <a href="/../../../statistics">Delay Statistics</a>
   </div>
-
-  <div class="container" id="app">
-    <h1 class="text-center">{{ results.name }}</h1>
-
-    <br><br>
-
-      <div class="card">
-        <div class="card-divider" style="background:#6495ED">
-          <p>{{ results.name }}</p>
-        </div>
-        <div class="card-section">
-          <p>Code: {{ results.code }}</p>
-          <p>Flight and delay statistics: <a :href='results.code+"/statistics"'>/statistics</a></p>
-        </div>
-      </div>
-      <div class="card-section">
-        <p>Code: {{ results.code }}</p>
-        <p>Flight and delay statistics: <a href="/statistics">/statistics</a></p>
-      </div>
-    </div>
-
-    <br><br>
-
-    <h2> Comments </h2>
-
+	<div class="container" id="app">
+    <h1 class="text-center">Statistics</h1>
+    
+    
+    
+    
     <fieldset>
-      <legend><h3>Give feedback:</h3></legend>
-      Name:<br>
-      <input type="text" v-model="author">
-      Score:<br>
-      <input type="text" v-model="score">
-      Comment:<br>
-      <textarea rows="4" cols="50" v-model="comment"></textarea>
+      <legend><h3>Add or update data:</h3></legend>
+      Month:<br>
+      <input type="text" v-model="month">
+      Airport:<br>
+      <input type="text" v-model="airport">
+      Data:<br>
+      <textarea rows="4" cols="50" v-model="data"></textarea>
       <br>
-      <button v-on:click="postcomment">Post comment</button>
+      <button v-on:click="addorupdate">Add or update data</button>
     </fieldset>
-
-    <br><br>
-
-    <div class="card"  v-for="r in ratings">
+    
+    <div class="card"  v-for="r in results">
       <div class="card-divider" style="background:#6495ED">
-        <p>Commented by: {{ r.author }}</p>
+        <p>Month:{{r.time.label}}</p>
+        <p>Airport:<a v-bind:href="'airports/' + r.airport.code">{{ r.airport.code }}</a></p>
       </div>
       <div class="card-section">
-        <p>At: {{ r.time }}</p>
-        <p>Score: {{ r.score }}</p>
-        <p>Comment: {{ r.comment }}</p>
+        <p>{{r.statistics}}</p>
       </div>
     </div>
 

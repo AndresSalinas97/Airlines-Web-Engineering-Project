@@ -68,7 +68,7 @@ app.get('/carriers/:carrier', function (req, res) {
 app.get('/statistics', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/statistics.html'));
 });
-app.get('/carrier_statistics', function (req, res) {
+app.get('/carriers/:carrier/:statistics', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/carrier_statistics.html'));
 });
 

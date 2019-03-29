@@ -2,22 +2,14 @@ const vm = new Vue({
     el: '#app',
     data: {
       results:'',
-      ratings:[],
-      score: 3,
-      author: "",
+      month:'',
+      airport:'',
       comment: "add a comment"
     },
     mounted() {
-      axios.get("http://localhost:8080"+window.location.pathname)
+		var str = window.location.pathname.split("/");
+      axios.get("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+window.location.search)
       .then(response => {this.results = response.data.data;
-	  })
-      .catch(error =>{
-        console.log(error.response)
-      })
-      axios.get("http://localhost:8080"+window.location.pathname.substring(0,12)+"/user-ratings")
-      .then(response => {this.ratings = response.data.data;
-      console.log(this.ratings);
-
 	  })
       .catch(error =>{
         console.log(error.response)
@@ -25,10 +17,16 @@ const vm = new Vue({
     
    },
    methods:{
-	   postcomment: function(event){
-		   axios.post("http://localhost:8080"+window.location.pathname.substring(0,12)+"/user-ratings",
-		   {author:this.author, comment:this.comment, score:this.score}, {headers:{"Content-Type":"application/json"}});
-		   location.reload();
+	   "addorupdate":function(event){
+		   axios.get("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport)
+		   .then(response => {if(response.data.data.length == 1){
+				   axios.patch("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport,
+				   data, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()})
+			   }else{
+				   axios.post("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport,
+				   data, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()})
+			   })
+		   }
 	   }
    }
 	   
