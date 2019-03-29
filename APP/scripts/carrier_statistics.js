@@ -20,7 +20,7 @@ const vm = new Vue({
 	   "addorupdate":function(event){
         var str = window.location.pathname.split("/");
 		   axios.get("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport)
-		   .then(response => {if(response.data.data.length == 1){
+		   .then(response => {if(response.data.data == [{}]){
 				   axios.patch("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport,
 				   this.jason, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()});
 			   }else{
@@ -28,7 +28,13 @@ const vm = new Vue({
 				   this.jason, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()});
                }
             })
-	   }
+       },
+       
+       "del":function(event){
+        var str = window.location.pathname.split("/");
+		  axios.delete("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport
+        ).then(response=>{location.reload()});
+    }   
    }
 	   
 });

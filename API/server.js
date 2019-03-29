@@ -26,7 +26,8 @@ app.use (function(req, res, next) {
 	req.setEncoding('utf8');
     res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "content-type");
-	res.header("Access-Control-Allow-Methods", "PATCH");
+	res.header("Access-Control-Allow-Methods", "*");
+
 	req.on('data', function(chunk) {
 	   data += chunk;
 	});
