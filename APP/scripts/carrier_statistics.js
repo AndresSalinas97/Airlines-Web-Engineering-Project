@@ -4,7 +4,7 @@ const vm = new Vue({
       results:'',
       month:'',
       airport:'',
-      comment: "add a comment"
+      jason:{}
     },
     mounted() {
 		var str = window.location.pathname.split("/");
@@ -18,15 +18,16 @@ const vm = new Vue({
    },
    methods:{
 	   "addorupdate":function(event){
+        var str = window.location.pathname.split("/");
 		   axios.get("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport)
 		   .then(response => {if(response.data.data.length == 1){
 				   axios.patch("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport,
-				   data, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()})
+				   this.jason, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()});
 			   }else{
 				   axios.post("http://localhost:8080/"+str[1]+"/"+str[2]+"/statistics/"+str[3]+"?month="+this.month+"&airport="+this.airport,
-				   data, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()})
-			   })
-		   }
+				   this.jason, {headers:{"Content-Type":"application/json"}}).then(response=>{location.reload()});
+               }
+            })
 	   }
    }
 	   
