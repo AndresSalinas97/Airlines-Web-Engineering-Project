@@ -1,61 +1,43 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+<head>
+  <meta charset="utf-8">
+  <title>Airlines API webapp</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+  <link rel="stylesheet" type="text/css" href="../style.css">
 
-    <meta charset="utf-8">
-    <title>Airlines API webapp</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
-    <link rel="stylesheet" type="text/css" href="../style.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script type="module" src="/../scripts/airports.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
 
-    <script src="https://unpkg.com/vue"></script>
-    <script type="module" src="/../scripts/airports.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<body>
+  <div class="topnav">
+      <a href="/../index">Home</a>
+      <a class="active" href="airports">Airports</a>
+      <a href="carriers">Carriers</a>
+      <a href="rankings">Carriers Rankings</a>
+      <a href="statistics">Delay Statistics</a>
+  </div>
 
+  <div class="container" id="app">
+    <h1 class="text-center">Airports</h1>
 
-  </head>
+    <br><br>
 
-  <body>
-      <div class="topnav">
-          <a href="/../index">Home</a>
-          <a class="active" href="airports">Airports</a>
-          <a href="carriers">Carriers</a>
-          <a href="rankings">Carriers Rankings</a>
-          <a href="statistics">Delay Statistics</a>
-        </div>
-
-
-
-
-    <div class="container" id="app">
-      <h1 class="text-center">Airports</h1>
-    <pre>
-
-
-
-
-    </pre>
-
-        <div class="card"v-for="r in results">
-          <div class="card-divider" style="background:#6495ED">
-            <p>{{r.name }}</p>
-          </div>
-          <div class="card-section">
-            <p><a v-bind:href="'airports/' + r.code">{{ r.code }}</a></p>
-          </div>
-        </div>
-        <pre>
-
-
-        </pre>
-
-
-
+    <div class="card"v-for="r in results">
+      <div class="card-divider" style="background:#6495ED">
+        <p>{{r.name }}</p>
+      </div>
+      <div class="card-section">
+        <p><a v-bind:href="'airports/' + r.code">{{ r.code }}</a></p>
+      </div>
     </div>
 
+    <br><br>
 
-
-
+  </div>
 
 </body>
 </html>
