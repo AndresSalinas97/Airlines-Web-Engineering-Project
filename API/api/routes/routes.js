@@ -1,3 +1,11 @@
+/**
+ * @file This file contains the endpoints routing.
+ *
+ * @author Emiel Pasman
+ * @author Andrés Salinas Lima
+ * @author Stefan Valeanu
+ */
+
 'use strict';
 
 const logger = require('../../utils/logger')
@@ -411,6 +419,7 @@ module.exports = function(app) {
 };
 
 
+// Converts the output to csv and sends it
 function sendCSV(result, res) {
 	const opts = { "flatten": true };
 	try {
