@@ -36,21 +36,19 @@
 
     </pre>
 
-    <form action="/action_page.php">
       <fieldset>
         <legend>Give feedback:</legend>
         Name:<br>
-        <input type="text" v-model="name" value="John Doe">
+        <input type="text" v-model="author">
         <br>
         Score:<br>
-        <input type="text" v-model="score" value="69">
+        <input type="text" v-model="score">
         <br>
         Comment:<br>
         <textarea rows="4" cols="50" v-model="comment"></textarea>
         <br>
-        <input type="submit" value="Submit">
+        <button v-on:click="postcomment">Post comment</button>
       </fieldset>
-    </form>
 
     <pre>
 
@@ -62,6 +60,7 @@
           </div>
           <div class="card-section">
             <p>Code: {{ results.code }}</p>
+            <p>Flight and delay statistics: <a href="/statistics">/statistics</a></p>
           </div>
         </div>
         <pre>
@@ -73,7 +72,7 @@
 
   
 
-    <div class="card"  v-for="r in things">
+    <div class="card"  v-for="r in ratings">
       <div class="card-divider" style="background:#6495ED">
         <p>Commented by: {{ r.author }}</p>
       </div>

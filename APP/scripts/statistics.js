@@ -1,16 +1,23 @@
 const vm = new Vue({
     el: '#app',
     data: {
-      results:''
+      results:'',
+      airport:"ATL",
+      airport2:"BOS",
+      carrier:"AA"
     },
     mounted() {
-      axios.get("http://localhost:8080/airports/ATL/delaystats?airport=BOS&carrier=AA"+ window.location.search)
-      .then(response => {
-          this.results = response.data.data
-    })
-      .catch(error =>{
-        console.log(error.response)
-      })
-    }
+       methods.filter();
+    },
+    methods: {
+		"filter":function(event){
+			  axios.get("http://localhost:8080/airports/"+ this.airport + "/delaystats?airport="+ this.airport2 +"&carrier=" + this.carrier)
+			  .then(response => {
+				  this.results = response.data.data
+			  })
+			  .catch(error =>{
+				console.log(error.response)
+			  })
+		  }
   });
   
