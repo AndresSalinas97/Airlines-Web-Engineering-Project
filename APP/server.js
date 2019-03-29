@@ -28,6 +28,10 @@ app.get('/scripts/airport.js', function (req, res) {
 app.get('/scripts/carrier.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/scripts/carrier.js'));
 });
+app.get('/scripts/carrier_statistics.js', function (req, res) {
+    res.sendFile(path.join(__dirname + '/scripts/carrier_statistics.js'));
+});
+
 
 //style
 app.get('/style.css', function (req, res) {
@@ -63,6 +67,9 @@ app.get('/carriers/:carrier', function (req, res) {
 });
 app.get('/statistics', function (req, res) {
     res.sendFile(path.join(__dirname + '/pages/statistics.html'));
+});
+app.get('/carrier_statistics', function (req, res) {
+    res.sendFile(path.join(__dirname + '/pages/carrier_statistics.html'));
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`))

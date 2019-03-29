@@ -26,9 +26,14 @@
 
     <br><br>
 
-    <div class="card">
-      <div class="card-divider" style="background:#6495ED">
-        <p>{{ results.name }}</p>
+      <div class="card">
+        <div class="card-divider" style="background:#6495ED">
+          <p>{{ results.name }}</p>
+        </div>
+        <div class="card-section">
+          <p>Code: {{ results.code }}</p>
+          <p>Flight and delay statistics: <a :href='results.code+"/statistics"'>/statistics</a></p>
+        </div>
       </div>
       <div class="card-section">
         <p>Code: {{ results.code }}</p>
