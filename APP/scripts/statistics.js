@@ -7,17 +7,19 @@ const vm = new Vue({
       carrier:"AA"
     },
     mounted() {
-       methods.filter();
+       this.filter();
     },
     methods: {
-		"filter":function(event){
+		filter:function(event){
 			  axios.get("http://localhost:8080/airports/"+ this.airport + "/delaystats?airport="+ this.airport2 +"&carrier=" + this.carrier)
 			  .then(response => {
 				  this.results = response.data.data
+				  console.log(this.results);
 			  })
 			  .catch(error =>{
 				console.log(error.response)
 			  })
 		  }
+	  }
   });
   
