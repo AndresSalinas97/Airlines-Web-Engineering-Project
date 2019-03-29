@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/../style.css">
 
     <script src="https://unpkg.com/vue"></script>
-    <script type="module" src="/../scripts/airport.js"></script>
+    <script type="module" src="/../scripts/carrier.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     
 
@@ -18,8 +18,8 @@
   <body>
       <div class="topnav">
           <a href="/../../index">Home</a>
-          <a class="active" href="/../airports">Airports</a>
-          <a href="/../carriers">Carriers</a>
+          <a href="/../airports">Airports</a>
+          <a class="active" href="/../carriers">Carriers</a>
           <a href="/../rankings">Carriers Rankings</a>
           <a href="/../statistics">Delay Statistics</a>
         </div>
@@ -28,11 +28,31 @@
 
  
     <div class="container" id="app">
-      <h2 class="text-center">Airport</h2>
+      <h2 class="text-center">{{ results.name }}</h2>
     <pre>
 
 
 
+
+    </pre>
+
+    <form action="/action_page.php">
+      <fieldset>
+        <legend>Give feedback:</legend>
+        Name:<br>
+        <input type="text" v-model="name" value="John Doe">
+        <br>
+        Score:<br>
+        <input type="text" v-model="score" value="69">
+        <br>
+        Comment:<br>
+        <textarea rows="4" cols="50" v-model="comment"></textarea>
+        <br>
+        <input type="submit" value="Submit">
+      </fieldset>
+    </form>
+
+    <pre>
 
     </pre>
  
@@ -40,7 +60,7 @@
           <div class="card-divider" style="background:#6495ED">
             <p>{{ results.name }}</p>
           </div>
-          <div class="card-section" v-if="results.timezone">
+          <div class="card-section">
             <p>Code: {{ results.code }}</p>
           </div>
         </div>
@@ -51,7 +71,27 @@
       
 
 
+  
+
+    <div class="card"  v-for="r in things">
+      <div class="card-divider" style="background:#6495ED">
+        <p>Commented by: {{ r.author }}</p>
+      </div>
+      <div class="card-section">
+        <p>At: {{ r.time }}</p>
+        <p>Score: {{ r.score }}</p>
+        <p>Comment: {{ r.comment }}</p>
+        
+      </div>
     </div>
+    <pre>
+
+
+    </pre>
+  
+
+
+</div>
 
     
 
