@@ -1,5 +1,7 @@
 # Web-Engineering-Project
-Final project for Web Engineering course
+**Final project for Web Engineering course**
+
+Web App + REST API to helps users to decide which carriers (airlines) and which airports to use in the USA for their air travel needs.
 
 ### Documentation
 The documentation for the API can be found in the "API Documentation" folder. This file serves as our project report.
