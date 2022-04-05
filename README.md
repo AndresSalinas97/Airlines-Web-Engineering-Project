@@ -1,5 +1,5 @@
 # Web-Engineering-Project
-**Final project for Web Engineering course**
+**Final project for the Web Engineering course**
 
 Web App + REST API to helps users to decide which carriers (airlines) and which airports to use in the USA for their air travel needs.
 
