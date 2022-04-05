@@ -11,7 +11,7 @@ Web App + REST API to helps users to decide which carriers (airlines) and which 
 
 ## Documentation
 
-The documentation for the API can be found in the `API Documentation` folder. This file serves as our project report.
+The documentation for the REST API can be found in [API Documentation](https://github.com/AndresSalinas97/Airlines-Web-Engineering-Project/blob/master/API%20Documentation/REST%20API%20Documentation.pdf). This file serves as our project report.
 
 ## Running the Code
 
